@@ -1,7 +1,7 @@
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
-import { SafetyCertificateOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined, BarChartOutlined } from "@ant-design/icons";
 
 function Sidenav({ color }) {
   const { pathname } = useLocation();
@@ -183,10 +183,23 @@ function Sidenav({ color }) {
             <span className="label">Standards</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item className="menu-item-header" key="6">
+        <Menu.Item key="6">
+          <NavLink to="/metrics">
+            <span
+              className="icon"
+              style={{
+                background: page === "metrics" ? color : "",
+              }}
+            >
+              <BarChartOutlined />
+            </span>
+            <span className="label">Standards</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item className="menu-item-header" key="7">
           Account Pages
         </Menu.Item>
-        <Menu.Item key="7">
+        <Menu.Item key="8">
           <NavLink to="/profile">
             <span
               className="icon"
