@@ -1,3 +1,16 @@
+/*!
+  =========================================================
+  * Muse Ant Design Dashboard - v1.0.0
+  =========================================================
+  * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
+  * Copyright 2021 Creative Tim (https://www.creative-tim.com)
+  * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
+  * Coded by Creative Tim
+  =========================================================
+  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+
+// import { useState } from "react";
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
@@ -194,6 +207,19 @@ function Sidenav({ color }) {
             <span className="label">Billing</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="4">
+          <NavLink to="/rtl">
+            <span
+              className="icon"
+              style={{
+                background: page === "rtl" ? color : "",
+              }}
+            >
+              {rtl}
+            </span>
+            <span className="label">RTL</span>
+          </NavLink>
+        </Menu.Item>
         <Menu.Item className="menu-item-header" key="5">
           Account Pages
         </Menu.Item>
@@ -223,6 +249,23 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
       </Menu>
+      <div className="aside-footer">
+        <div
+          className="footer-box"
+          style={{
+            background: color,
+          }}
+        >
+          <span className="icon" style={{ color }}>
+            {dashboard}
+          </span>
+          <h6>Need Help?</h6>
+          <p>Please check our docs</p>
+          <Button type="primary" className="ant-btn-sm ant-btn-block">
+            DOCUMENTATION
+          </Button>
+        </div>
+      </div>
     </>
   );
 }

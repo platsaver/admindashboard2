@@ -1,26 +1,37 @@
+/*!
+=========================================================
+* Muse Ant Design Dashboard - v1.0.0
+=========================================================
+* Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
+* Coded by Creative Tim
+=========================================================
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import {
   Layout,
   Menu,
   Button,
+  Row,
+  Col,
   Typography,
-  Card,
   Form,
   Input,
-  Checkbox,
+  Switch,
 } from "antd";
-import logo1 from "../assets/images/logos-facebook.svg";
-import logo2 from "../assets/images/logo-apple.svg";
-import logo3 from "../assets/images/Google__G__Logo.svg.png";
-
-import { Link } from "react-router-dom";
+import signinbg from "../assets/images/img-signin.jpg";
 import {
   DribbbleOutlined,
   TwitterOutlined,
   InstagramOutlined,
   GithubOutlined,
 } from "@ant-design/icons";
-
+function onChange(checked) {
+  console.log(`switch to ${checked}`);
+}
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 const template = [
@@ -103,7 +114,7 @@ const signin = [
     />
   </svg>,
 ];
-export default class SignUp extends Component {
+export default class SignIn extends Component {
   render() {
     const onFinish = (values) => {
       console.log("Success:", values);
@@ -114,7 +125,7 @@ export default class SignUp extends Component {
     };
     return (
       <>
-        <div className="layout-default ant-layout layout-sign-up">
+        <Layout className="layout-default layout-signin">
           <Header>
             <div className="header-col header-brand">
               <h5>Muse Dashboard</h5>
@@ -148,96 +159,90 @@ export default class SignUp extends Component {
               </Menu>
             </div>
             <div className="header-col header-btn">
-              <Button type="false">FREE DOWNLOAD</Button>
+              <Button type="primary">FREE DOWNLOAD</Button>
             </div>
           </Header>
-
-          <Content className="p-0">
-            <div className="sign-up-header">
-              <div className="content">
-                <Title>Sign Up</Title>
-                <p className="text-lg">
-                  Use these awesome forms to login or create new account in your
-                  project for free.
-                </p>
-              </div>
-            </div>
-
-            <Card
-              className="card-signup header-solid h-full ant-card pt-0"
-              title={<h5>Register With</h5>}
-              bordered="false"
-            >
-              <div className="sign-up-gateways">
-                <Button type="false">
-                  <img src={logo1} alt="logo 1" />
-                </Button>
-                <Button type="false">
-                  <img src={logo2} alt="logo 2" />
-                </Button>
-                <Button type="false">
-                  <img src={logo3} alt="logo 3" />
-                </Button>
-              </div>
-              <p className="text-center my-25 font-semibold text-muted">Or</p>
-              <Form
-                name="basic"
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                className="row-col"
+          <Content className="signin">
+            <Row gutter={[24, 0]} justify="space-around">
+              <Col
+                xs={{ span: 24, offset: 0 }}
+                lg={{ span: 6, offset: 2 }}
+                md={{ span: 12 }}
               >
-                <Form.Item
-                  name="Name"
-                  rules={[
-                    { required: true, message: "Please input your username!" },
-                  ]}
+                <Title className="mb-15">Sign In</Title>
+                <Title className="font-regular text-muted" level={5}>
+                  Enter your email and password to sign in
+                </Title>
+                <Form
+                  onFinish={onFinish}
+                  onFinishFailed={onFinishFailed}
+                  layout="vertical"
+                  className="row-col"
                 >
-                  <Input placeholder="Name" />
-                </Form.Item>
-                <Form.Item
-                  name="email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                  ]}
-                >
-                  <Input placeholder="email" />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                  ]}
-                >
-                  <Input placeholder="Passwoed" />
-                </Form.Item>
-
-                <Form.Item name="remember" valuePropName="checked">
-                  <Checkbox>
-                    I agree the{" "}
-                    <a href="#pablo" className="font-bold text-dark">
-                      Terms and Conditions
-                    </a>
-                  </Checkbox>
-                </Form.Item>
-
-                <Form.Item>
-                  <Button
-                    style={{ width: "100%" }}
-                    type="primary"
-                    htmlType="submit"
+                  <Form.Item
+                    className="username"
+                    label="Email"
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your email!",
+                      },
+                    ]}
                   >
-                    SIGN UP
-                  </Button>
-                </Form.Item>
-              </Form>
-              <p className="font-semibold text-muted text-center">
-                Already have an account?{" "}
-                <Link to="/sign-in" className="font-bold text-dark">
-                  Sign In
-                </Link>
-              </p>
-            </Card>
+                    <Input placeholder="Email" />
+                  </Form.Item>
+
+                  <Form.Item
+                    className="username"
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your password!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Password" />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="remember"
+                    className="aligin-center"
+                    valuePropName="checked"
+                  >
+                    <Switch defaultChecked onChange={onChange} />
+                    Remember me
+                  </Form.Item>
+
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      style={{ width: "100%" }}
+                    >
+                      SIGN IN
+                    </Button>
+                  </Form.Item>
+                  <p className="font-semibold text-muted">
+                    Don't have an account?{" "}
+                    <Link to="/sign-up" className="text-dark font-bold">
+                      Sign Up
+                    </Link>
+                  </p>
+                </Form>
+              </Col>
+              <Col
+                className="sign-img"
+                style={{ padding: 12 }}
+                xs={{ span: 24 }}
+                lg={{ span: 12 }}
+                md={{ span: 12 }}
+              >
+                <img src={signinbg} alt="" />
+              </Col>
+            </Row>
           </Content>
           <Footer>
             <Menu mode="horizontal">
@@ -279,7 +284,7 @@ export default class SignUp extends Component {
               Copyright © 2021 Muse by <a href="#pablo">Creative Tim</a>.{" "}
             </p>
           </Footer>
-        </div>
+        </Layout>
       </>
     );
   }
