@@ -108,6 +108,25 @@ function Sidenav({ color }) {
       ></path>
     </svg>,
   ];
+
+  const partners = [
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      key={0}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM8 7C8 5.89543 8.89543 5 10 5C11.1046 5 12 5.89543 12 7C12 8.10457 11.1046 9 10 9C8.89543 9 8 8.10457 8 7ZM10 11C7.79086 11 6 12.7909 6 15C6 15.5523 6.44772 16 7 16H13C13.5523 16 14 15.5523 14 15C14 12.7909 12.2091 11 10 11Z"
+        fill={color}
+      ></path>
+    </svg>,
+  ];
+
   return (
     <>
       <div className="brand">
@@ -168,10 +187,23 @@ function Sidenav({ color }) {
             <span className="label">RTL</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item className="menu-item-header" key="5">
+        <Menu.Item key="5">
+          <NavLink to="/partners">
+            <span
+              className="icon"
+              style={{
+                background: page === "partners" ? color : "",
+              }}
+            >
+              {partners}
+            </span>
+            <span className="label">Partners</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item className="menu-item-header" key="6">
           Account Pages
         </Menu.Item>
-        <Menu.Item key="6">
+        <Menu.Item key="7">
           <NavLink to="/profile">
             <span
               className="icon"

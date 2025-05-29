@@ -4,6 +4,7 @@ import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
 import Rtl from "./pages/Rtl";
 import Profile from "./pages/Profile";
+import PartnersDashboard from "./pages/PartnersDashboard"; // Import new component
 import Main from "./components/layout/Main";
 import "antd/dist/reset.css";
 import "./assets/styles/main.css";
@@ -19,6 +20,7 @@ function App() {
           <Route path="/billing" element={<Billing />} />
           <Route path="/rtl" element={<Rtl />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/partners" element={<PartnersDashboard />} /> {/* New route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>
