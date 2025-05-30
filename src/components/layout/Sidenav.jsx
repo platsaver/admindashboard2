@@ -114,7 +114,7 @@ function Sidenav({ color }) {
     <>
       <div className="brand">
         <img src={logo} alt="" />
-        <span>Muse Dashboard</span>
+        <span>Carbon Dashboard</span>
       </div>
       <hr />
       <Menu theme="light" mode="inline">
@@ -194,6 +194,19 @@ function Sidenav({ color }) {
               <BarChartOutlined />
             </span>
             <span className="label">Metrics</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="6">
+          <NavLink to="/activities">
+            <span
+              className="icon"
+              style={{
+                background: page === "activities" ? color : "",
+              }}
+            >
+              <SafetyCertificateOutlined />
+            </span>
+            <span className="label">Activities</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item className="menu-item-header" key="7">

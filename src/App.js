@@ -6,6 +6,7 @@ import Profile from "./pages/Profile";
 import PartnersDashboard from "./pages/PartnersDashboard";
 import Standards from "./pages/Standards";
 import Metrics from "./pages/Metrics"
+import Activities from "./pages/Activities";
 import Main from "./components/layout/Main";
 import "antd/dist/reset.css";
 import "./assets/styles/main.css";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/partners" element={<PartnersDashboard />} />
           <Route path="/standards" element={<Standards />}/>
           <Route path="/metrics" element={<Metrics />}/>
+          <Route path="/activities" element={<Activities />}/>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>
