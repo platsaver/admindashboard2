@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   Card,
   Col,
@@ -16,12 +15,11 @@ import {
 import {
   ToTopOutlined,
   MenuUnfoldOutlined,
-  RightOutlined,
 } from "@ant-design/icons";
 import Paragraph from "antd/lib/typography/Paragraph";
 
-import Echart from "../components/chart/EChart";
-import LineChart from "../components/chart/LineChart";
+import Echart from "../components/chart/EChart"; // Assume this displays carbon credit trading volume
+import LineChart from "../components/chart/LineChart"; // Assume this shows emission reductions over time
 
 import ava1 from "../assets/images/logo-shopify.svg";
 import ava2 from "../assets/images/logo-atlassian.svg";
@@ -33,7 +31,6 @@ import team1 from "../assets/images/team-1.jpg";
 import team2 from "../assets/images/team-2.jpg";
 import team3 from "../assets/images/team-3.jpg";
 import team4 from "../assets/images/team-4.jpg";
-import card from "../assets/images/info-card-1.jpg";
 
 function Home() {
   const { Title, Text } = Typography;
@@ -94,7 +91,7 @@ function Home() {
       ></path>
     </svg>,
   ];
-  const heart = [
+  const leaf = [
     <svg
       width="22"
       height="22"
@@ -104,14 +101,16 @@ function Home() {
       key={0}
     >
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M3.17157 5.17157C4.73367 3.60948 7.26633 3.60948 8.82843 5.17157L10 6.34315L11.1716 5.17157C12.7337 3.60948 15.2663 3.60948 16.8284 5.17157C18.3905 6.73367 18.3905 9.26633 16.8284 10.8284L10 17.6569L3.17157 10.8284C1.60948 9.26633 1.60948 6.73367 3.17157 5.17157Z"
+        d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM10 15C7.23858 15 5 12.7614 5 10C5 7.23858 7.23858 5 10 5C12.7614 5 15 7.23858 15 10C15 12.7614 12.7614 15 10 15Z"
+        fill="#fff"
+      ></path>
+      <path
+        d="M10 7C8.89543 7 8 7.89543 8 9C8 10.1046 8.89543 11 10 11C11.1046 11 12 10.1046 12 9C12 7.89543 11.1046 7 10 7Z"
         fill="#fff"
       ></path>
     </svg>,
   ];
-  const cart = [
+  const offset = [
     <svg
       width="22"
       height="22"
@@ -121,40 +120,39 @@ function Home() {
       key={0}
     >
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M10 2C7.79086 2 6 3.79086 6 6V7H5C4.49046 7 4.06239 7.38314 4.00612 7.88957L3.00612 16.8896C2.97471 17.1723 3.06518 17.455 3.25488 17.6669C3.44458 17.8789 3.71556 18 4 18H16C16.2844 18 16.5554 17.8789 16.7451 17.6669C16.9348 17.455 17.0253 17.1723 16.9939 16.8896L15.9939 7.88957C15.9376 7.38314 15.5096 7 15 7H14V6C14 3.79086 12.2091 2 10 2ZM12 7V6C12 4.89543 11.1046 4 10 4C8.89543 4 8 4.89543 8 6V7H12ZM6 10C6 9.44772 6.44772 9 7 9C7.55228 9 8 9.44772 8 10C8 10.5523 7.55228 11 7 11C6.44772 11 6 10.5523 6 10ZM13 9C12.4477 9 12 9.44772 12 10C12 10.5523 12.4477 11 13 11C13.5523 11 14 10.5523 14 10C14 9.44772 13.5523 9 13 9Z"
+        d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM12 14H8V12H10V10H8V8H10V6H12V14Z"
         fill="#fff"
       ></path>
     </svg>,
   ];
+
   const count = [
     {
-      today: "Today’s Sales",
-      title: "$53,000",
-      persent: "+30%",
+      today: "Carbon Credits Traded",
+      title: "5,300 tons",
+      persent: "+25%",
       icon: dollor,
       bnb: "bnb2",
     },
     {
-      today: "Today’s Users",
-      title: "3,200",
-      persent: "+20%",
-      icon: profile,
+      today: "Active Projects",
+      title: "12",
+      persent: "+15%",
+      icon: leaf,
       bnb: "bnb2",
     },
     {
-      today: "New Clients",
-      title: "+1,200",
-      persent: "-20%",
-      icon: heart,
+      today: "New Participants",
+      title: "+850",
+      persent: "-10%",
+      icon: profile,
       bnb: "redtext",
     },
     {
-      today: "New Orders",
-      title: "$13,200",
-      persent: "10%",
-      icon: cart,
+      today: "Offset Transactions",
+      title: "1,200 tons",
+      persent: "+20%",
+      icon: offset,
       bnb: "bnb2",
     },
   ];
@@ -162,8 +160,8 @@ function Home() {
   const list = [
     {
       img: ava1,
-      Title: "Soft UI Shopify Version",
-      bud: "$14,000",
+      Title: "Reforestation Program",
+      bud: "$250,000",
       progress: <Progress percent={60} size="small" />,
       member: (
         <div className="avatar-group mt-2">
@@ -184,8 +182,8 @@ function Home() {
     },
     {
       img: ava2,
-      Title: "Progress Track",
-      bud: "$3,000",
+      Title: "Renewable Energy Initiative",
+      bud: "$100,000",
       progress: <Progress percent={10} size="small" />,
       member: (
         <div className="avatar-group mt-2">
@@ -200,7 +198,7 @@ function Home() {
     },
     {
       img: ava3,
-      Title: "Fix Platform Errors",
+      Title: "Methane Capture Project",
       bud: "Not Set",
       progress: <Progress percent={100} size="small" status="active" />,
       member: (
@@ -219,8 +217,8 @@ function Home() {
     },
     {
       img: ava4,
-      Title: "Launch new Mobile App",
-      bud: "$20,600",
+      Title: "Urban Green Space Expansion",
+      bud: "$300,000",
       progress: <Progress percent={100} size="small" status="active" />,
       member: (
         <div className="avatar-group mt-2">
@@ -235,8 +233,8 @@ function Home() {
     },
     {
       img: ava5,
-      Title: "Add the New Landing Page",
-      bud: "$4,000",
+      Title: "Carbon Offset Marketplace",
+      bud: "$150,000",
       progress: <Progress percent={80} size="small" />,
       member: (
         <div className="avatar-group mt-2">
@@ -255,17 +253,16 @@ function Home() {
         </div>
       ),
     },
-
     {
       img: ava6,
-      Title: "Redesign Online Store",
-      bud: "$2,000",
+      Title: "Sustainable Agriculture Program",
+      bud: "$80,000",
       progress: (
         <Progress
           percent={100}
           size="small"
           status="exception"
-          format={() => "Cancel"}
+          format={() => "Cancelled"}
         />
       ),
       member: (
@@ -283,29 +280,29 @@ function Home() {
 
   const timelineList = [
     {
-      title: "$2,400 - Redesign store",
+      title: "Issued 500 tons of CO2 credits",
       time: "09 JUN 7:20 PM",
       color: "green",
     },
     {
-      title: "New order #3654323",
+      title: "New offset transaction #CC3654323",
       time: "08 JUN 12:20 PM",
       color: "green",
     },
     {
-      title: "Company server payments",
+      title: "Funded reforestation project",
       time: "04 JUN 3:10 PM",
     },
     {
-      title: "New card added for order #4826321",
+      title: "Verified 1,000 tons of CO2 offsets",
       time: "02 JUN 2:45 PM",
     },
     {
-      title: "Unlock folders for development",
+      title: "Launched new carbon credit platform",
       time: "18 MAY 1:30 PM",
     },
     {
-      title: "New order #46282344",
+      title: "New offset transaction #CC46282344",
       time: "14 MAY 3:30 PM",
       color: "gray",
     },
@@ -322,9 +319,9 @@ function Home() {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
+        message.success(`${info.file.name} carbon credit data uploaded successfully`);
       } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} carbon credit data upload failed.`);
       }
     },
   };
@@ -343,7 +340,7 @@ function Home() {
               xl={6}
               className="mb-24"
             >
-              <Card bordered={false} className="criclebox ">
+              <Card bordered={false} className="criclebox">
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
                     <Col xs={18}>
@@ -365,12 +362,12 @@ function Home() {
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
-              <Echart />
+              <Echart /> {/* Should display carbon credit trading volume */}
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
-              <LineChart />
+              <LineChart /> {/* Should display emission reductions over time */}
             </Card>
           </Col>
         </Row>
@@ -380,17 +377,17 @@ function Home() {
             <Card bordered={false} className="criclebox cardbody h-full">
               <div className="project-ant">
                 <div>
-                  <Title level={5}>Projects</Title>
+                  <Title level={5}>Carbon Credit Projects</Title>
                   <Paragraph className="lastweek">
-                    done this month<span className="blue">40%</span>
+                    emissions reduced this month <span className="blue">40%</span>
                   </Paragraph>
                 </div>
                 <div className="ant-filtertabs">
                   <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
                     <Radio.Group onChange={onChange} defaultValue="a">
                       <Radio.Button value="a">ALL</Radio.Button>
-                      <Radio.Button value="b">ONLINE</Radio.Button>
-                      <Radio.Button value="c">STORES</Radio.Button>
+                      <Radio.Button value="b">RENEWABLE</Radio.Button>
+                      <Radio.Button value="c">REFORESTATION</Radio.Button>
                     </Radio.Group>
                   </div>
                 </div>
@@ -399,9 +396,9 @@ function Home() {
                 <table className="width-100">
                   <thead>
                     <tr>
-                      <th>COMPANIES</th>
-                      <th>MEMBERS</th>
-                      <th>BUDGET</th>
+                      <th>PROJECTS</th>
+                      <th>TEAM</th>
+                      <th>FUNDING</th>
                       <th>COMPLETION</th>
                     </tr>
                   </thead>
@@ -421,7 +418,7 @@ function Home() {
                         <td>{d.member}</td>
                         <td>
                           <span className="text-xs font-weight-bold">
-                            {d.bud}{" "}
+                            {d.bud}
                           </span>
                         </td>
                         <td>
@@ -439,7 +436,7 @@ function Home() {
                     className="ant-full-box"
                     icon={<ToTopOutlined />}
                   >
-                    <span className="click">Click to Upload</span>
+                    <span className="click">Upload Carbon Credit Data</span>
                   </Button>
                 </Upload>
               </div>
@@ -448,13 +445,13 @@ function Home() {
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <div className="timeline-box">
-                <Title level={5}>Orders History</Title>
+                <Title level={5}>Carbon Credit Transactions</Title>
                 <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
-                  this month <span className="bnb2">20%</span>
+                  offsets this month <span className="bnb2">20%</span>
                 </Paragraph>
 
                 <Timeline
-                  pending="Recording..."
+                  pending="Processing..."
                   className="timelinelist"
                   reverse={reverse}
                 >
