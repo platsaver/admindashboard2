@@ -193,7 +193,7 @@ function Sidenav({ color }) {
             >
               <BarChartOutlined />
             </span>
-            <span className="label">Standards</span>
+            <span className="label">Metrics</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item className="menu-item-header" key="7">
