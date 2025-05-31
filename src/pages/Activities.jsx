@@ -323,7 +323,7 @@ const Dashboard = () => {
       </Row>
       <div style={{paddingTop: '32px', paddingBottom: '32px'}}>
         <Card
-        title={<Title level={4} className="text-gray-800">Bảng Kanban Nhiệm vụ</Title>}
+        title={<Title level={4} className="text-gray-800">Nhiệm vụ</Title>}
         className="shadow-lg rounded-lg bg-white"
         style={{ border: '1px solid #e8e8e8' }}
         >
