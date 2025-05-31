@@ -214,59 +214,45 @@ const Dashboard = () => {
     const sourceColumnId = Object.keys(tasks).find((key) =>
       tasks[key].some((task) => task.id === sourceId)
     );
-
-    let destinationColumnId;
-
-    if (Object.keys(tasks).some(key => tasks[key].some(task => task.id === overId))) {
-      destinationColumnId = Object.keys(tasks).find((key) =>
-        tasks[key].some((task) => task.id === overId)
-      );
-    } 
-    
-    else if (Object.keys(tasks).includes(overId)) {
-      destinationColumnId = overId;
-    }
+    const destinationColumnId = Object.keys(tasks).includes(overId)
+      ? overId
+      : Object.keys(tasks).find((key) =>
+          tasks[key].some((task) => task.id === overId)
+        );
 
     if (!sourceColumnId || !destinationColumnId) return;
 
-    
-    if (sourceColumnId === destinationColumnId && Object.keys(tasks).some(key => tasks[key].some(task => task.id === overId))) {
-      const column = tasks[sourceColumnId];
+    if (sourceColumnId === destinationColumnId) {
+      const column = [...tasks[sourceColumnId]];
       const sourceIndex = column.findIndex((task) => task.id === sourceId);
       const destinationIndex = column.findIndex((task) => task.id === overId);
 
       if (sourceIndex !== destinationIndex) {
-        const newColumn = [...column];
-        const [movedTask] = newColumn.splice(sourceIndex, 1);
-        newColumn.splice(destinationIndex, 0, movedTask);
+        const [movedTask] = column.splice(sourceIndex, 1);
+        column.splice(destinationIndex, 0, movedTask);
 
         setTasks({
           ...tasks,
-          [sourceColumnId]: newColumn,
+          [sourceColumnId]: column,
         });
       }
-    } 
-    else {
-      const sourceColumn = tasks[sourceColumnId];
-      const destinationColumn = tasks[destinationColumnId];
+    } else {
+      const sourceColumn = [...tasks[sourceColumnId]];
+      const destinationColumn = [...tasks[destinationColumnId]];
       const sourceIndex = sourceColumn.findIndex((task) => task.id === sourceId);
+      const [movedTask] = sourceColumn.splice(sourceIndex, 1);
 
-      const newSourceColumn = [...sourceColumn];
-      const newDestinationColumn = [...destinationColumn];
-      const [movedTask] = newSourceColumn.splice(sourceIndex, 1);
-
-      if (!Object.keys(tasks).some(key => tasks[key].some(task => task.id === overId))) {
-        newDestinationColumn.push(movedTask);
+      const destinationIndex = destinationColumn.findIndex((task) => task.id === overId);
+      if (destinationIndex === -1) {
+        destinationColumn.push(movedTask);
       } else {
-        
-        const destinationIndex = destinationColumn.findIndex((task) => task.id === overId);
-        newDestinationColumn.splice(destinationIndex, 0, movedTask);
+        destinationColumn.splice(destinationIndex, 0, movedTask);
       }
 
       setTasks({
         ...tasks,
-        [sourceColumnId]: newSourceColumn,
-        [destinationColumnId]: newDestinationColumn,
+        [sourceColumnId]: sourceColumn,
+        [destinationColumnId]: destinationColumn,
       });
     }
   };
@@ -335,53 +321,55 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Card
+      <div style={{paddingTop: '32px', paddingBottom: '32px'}}>
+        <Card
         title={<Title level={4} className="text-gray-800">Bảng Kanban Nhiệm vụ</Title>}
         className="shadow-lg rounded-lg bg-white"
         style={{ border: '1px solid #e8e8e8' }}
-      >
-        <DndContext 
-          sensors={sensors} 
-          collisionDetection={closestCenter} 
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
         >
-          <Row gutter={[16, 16]}>
-            {Object.entries(tasks).map(([columnId, taskList]) => (
-              <Col span={8} key={columnId}>
-                <Card
-                  title={
-                    <Title level={5} style={{ color: columns[columnId].color, margin: 0 }}>
-                      {columns[columnId].name} ({taskList.length})
-                    </Title>
-                  }
-                  className="shadow-md"
-                  style={{
-                    background: '#fafafa',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <SortableContext items={taskList.map(task => task.id)} strategy={verticalListSortingStrategy}>
-                    <DroppableColumn id={columnId} isOver={activeId && activeId !== columnId}>
-                      {taskList.map((task) => (
-                        <SortableTask
-                          key={task.id}
-                          id={task.id}
-                          title={task.title}
-                          description={task.description}
-                          priority={task.priority}
-                          getPriorityColor={getPriorityColor}
-                        />
-                      ))}
-                    </DroppableColumn>
-                  </SortableContext>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </DndContext>
-      </Card>
+          <DndContext 
+            sensors={sensors} 
+            collisionDetection={closestCenter} 
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <Row gutter={[16, 16]}>
+              {Object.entries(tasks).map(([columnId, taskList]) => (
+                <Col span={8} key={columnId}>
+                  <Card
+                    title={
+                      <Title level={5} style={{ color: columns[columnId].color, margin: 0 }}>
+                        {columns[columnId].name} ({taskList.length})
+                      </Title>
+                    }
+                    className="shadow-md"
+                    style={{
+                      background: '#fafafa',
+                      border: '1px solid #e8e8e8',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <SortableContext items={taskList.map(task => task.id)} strategy={verticalListSortingStrategy}>
+                      <DroppableColumn id={columnId} isOver={activeId && activeId !== columnId}>
+                        {taskList.map((task) => (
+                          <SortableTask
+                            key={task.id}
+                            id={task.id}
+                            title={task.title}
+                            description={task.description}
+                            priority={task.priority}
+                            getPriorityColor={getPriorityColor}
+                          />
+                        ))}
+                      </DroppableColumn>
+                    </SortableContext>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </DndContext>
+        </Card>
+      </div>
     </div>
   );
 };
