@@ -17,12 +17,12 @@ import visa from "../assets/images/visa-logo.png";
 function Billing() {
   const data = [
     {
-      title: "March, 01, 2021",
+      title: "March, 01, 2024",
       description: "#MS-415646",
       amount: "$180",
     },
     {
-      title: "February, 12, 2021",
+      title: "February, 12, 2024",
       description: "#RV-126749",
       amount: "$250",
     },
@@ -257,7 +257,7 @@ function Billing() {
       headding: <h6>NEWEST</h6>,
       avatar: mins,
       title: "Netflix",
-      description: "27 March 2021, at 12:30 PM",
+      description: "27 March 2024, at 12:30 PM",
       amount: "- $2,500",
       textclass: "text-light-danger",
       amountcolor: "text-danger",
@@ -265,7 +265,7 @@ function Billing() {
     {
       avatar: <PlusOutlined style={{ fontSize: 10 }} />,
       title: "Apple",
-      description: "27 March 2021, at 04:30 AM",
+      description: "27 March 2024, at 04:30 AM",
       amount: "+ $2,000",
       textclass: "text-fill",
       amountcolor: "text-success",
@@ -275,7 +275,7 @@ function Billing() {
     {
       avatar: <PlusOutlined style={{ fontSize: 10 }} />,
       title: "Stripe",
-      description: "26 March 2021, at 12:30 AM",
+      description: "26 March 2024, at 12:30 AM",
       amount: "+ $750",
       textclass: "text-fill",
       amountcolor: "text-success",
@@ -283,7 +283,7 @@ function Billing() {
     {
       avatar: <PlusOutlined style={{ fontSize: 10 }} />,
       title: "HubSpot",
-      description: "26 March 2021, at 11:30 AM",
+      description: "26 March 2024, at 11:30 AM",
       amount: "+ $1,050",
       textclass: "text-fill",
       amountcolor: "text-success",
@@ -291,7 +291,7 @@ function Billing() {
     {
       avatar: <PlusOutlined style={{ fontSize: 10 }} />,
       title: "Creative Tim",
-      description: "26 March 2021, at 07:30 AM",
+      description: "26 March 2024, at 07:30 AM",
       amount: "+ $2,400",
       textclass: "text-fill",
       amountcolor: "text-success",
@@ -299,7 +299,7 @@ function Billing() {
     {
       avatar: <ExclamationOutlined style={{ fontSize: 10 }} />,
       title: "Webflow",
-      description: "26 March 2021, at 04:00 AM",
+      description: "26 March 2024, at 04:00 AM",
       amount: "Pending",
       textclass: "text-warning",
       amountcolor: "text-warning-b",
@@ -488,7 +488,7 @@ function Billing() {
             extra={
               <p className="card-header-date">
                 {calender}
-                <span>23 - 30 March 2021</span>
+                <span>23 - 30 March 2024</span>
               </p>
             }
           >
