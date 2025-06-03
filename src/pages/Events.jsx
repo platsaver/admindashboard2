@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-// Define the CSS styles globally to ensure they apply to FullCalendar events
+// Define the CSS styles globally
 const globalStyles = `
   .fc-event.bg-primary {
     background-color: #007bff !important;
@@ -31,7 +31,6 @@ export default class CalendarComponent extends Component {
   render() {
     return (
       <>
-        {/* Inject global styles to ensure they apply to FullCalendar */}
         <style>{globalStyles}</style>
         <div className="layout-content">
           <FullCalendar
@@ -52,8 +51,8 @@ export default class CalendarComponent extends Component {
               {
                 title: "Call with Dave",
                 start: "2024-10-18",
-                end: "2024-10-18", // Fixed the end date (2020-10-18 was incorrect)
-                classNames: ["bg-danger"], // Use classNames instead of className
+                end: "2024-10-18", 
+                classNames: ["bg-danger"], 
               },
               {
                 title: "Lunch meeting",
