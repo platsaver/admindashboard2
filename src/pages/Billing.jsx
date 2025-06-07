@@ -335,7 +335,7 @@ function Billing() {
               </Card>
             </Col>
             <Col xs={12} xl={6} className="mb-24">
-              <Card bordered={false} className="widget-2 h-full">
+              <Card className="widget-2 h-full">
                 <Statistic
                   title={
                     <>
@@ -350,7 +350,7 @@ function Billing() {
               </Card>
             </Col>
             <Col xs={12} xl={6} className="mb-24">
-              <Card bordered={false} className="widget-2 h-full">
+              <Card className="widget-2 h-full">
                 <Statistic
                   title={
                     <>

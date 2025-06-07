@@ -340,7 +340,7 @@ function Home() {
               xl={6}
               className="mb-24"
             >
-              <Card bordered={false} className="criclebox">
+              <Card className="criclebox">
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
                     <Col xs={18}>
@@ -361,12 +361,12 @@ function Home() {
 
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
+            <Card className="criclebox h-full">
               <Echart /> {/* Should display carbon credit trading volume */}
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
+            <Card className="criclebox h-full">
               <LineChart /> {/* Should display emission reductions over time */}
             </Card>
           </Col>
@@ -374,7 +374,7 @@ function Home() {
 
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
-            <Card bordered={false} className="criclebox cardbody h-full">
+            <Card className="criclebox cardbody h-full">
               <div className="project-ant">
                 <div>
                   <Title level={5}>Carbon Credit Projects</Title>
@@ -443,7 +443,7 @@ function Home() {
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
+            <Card className="criclebox h-full">
               <div className="timeline-box">
                 <Title level={5}>Carbon Credit Transactions</Title>
                 <Paragraph className="lastweek" style={{ marginBottom: 24 }}>

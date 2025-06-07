@@ -8,6 +8,7 @@ import Standards from "./pages/Standards";
 import Metrics from "./pages/Metrics"
 import Activities from "./pages/Activities";
 import Events from "./pages/Events";
+import Reports from "./pages/Reports";
 import Main from "./components/layout/Main";
 import "antd/dist/reset.css";
 import "./assets/styles/main.css";
@@ -27,6 +28,7 @@ function App() {
           <Route path="/metrics" element={<Metrics />}/>
           <Route path="/activities" element={<Activities />}/>
           <Route path="/events" element={<Events />}/>
+          <Route path="/reports" element={<Reports/>}/>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>

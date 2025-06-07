@@ -244,7 +244,7 @@ function Metrics() {
 
         {/* Biểu đồ trực quan - 1/4 */}
         <Col xs={24} md={6}>
-          <Card bordered={false} className="criclebox mb-24" title="Phân bố Chỉ Số">
+          <Card className="criclebox mb-24" title="Phân bố Chỉ Số">
             <div id="chart">
               <ReactApexChart
                 className="chart-visitor"
@@ -259,7 +259,7 @@ function Metrics() {
 
         {/* Mức độ hoàn thành - 1/4 */}
         <Col xs={24} md={6}>
-          <Card bordered={false} className="criclebox mb-24" title="Mức Độ Hoàn Thành">
+          <Card className="criclebox mb-24" title="Mức Độ Hoàn Thành">
             {filteredData.map((item) => (
               <div key={item.key} style={{ marginBottom: 16 }}>
                 <Title level={5}>{item.name}</Title>
@@ -274,7 +274,7 @@ function Metrics() {
 
         {/* Xu hướng - 2/3 */}
         <Col xs={24} md={16}>
-          <Card bordered={false} className="criclebox mb-24" title="Xu Hướng">
+          <Card className="criclebox mb-24" title="Xu Hướng">
             <div id="chart">
               <ReactApexChart
                 className="chart-visitor"
@@ -294,7 +294,7 @@ function Metrics() {
 
         {/* Dự báo - 1/3 */}
         <Col xs={24} md={8}>
-          <Card bordered={false} className="criclebox mb-24" title="Dự Báo">
+          <Card className="criclebox mb-24" title="Dự Báo">
             <Paragraph>
               Xu hướng giảm nhẹ trong chỉ số "Tỷ lệ lỗi sản phẩm" dự kiến tiếp tục
               trong 3 tháng tới. Cần tăng cường kiểm soát chất lượng.
