@@ -267,9 +267,6 @@ function PartnersDashboard() {
               <Descriptions.Item label="Location">
                 {selectedPartner.location}
               </Descriptions.Item>
-              <Descriptions.Item label="Coordinates">
-                {selectedPartner.coordinates.join(", ")}
-              </Descriptions.Item>
             </Descriptions>
             <Button
               type="primary"
