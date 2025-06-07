@@ -195,7 +195,6 @@ function Metrics() {
         {/* Bảng chỉ số - 1/2 */}
         <Col xs={24} md={12}>
           <Card
-            bordered={false}
             className="criclebox tablespace mb-24"
             extra={
               <Space>

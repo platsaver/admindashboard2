@@ -130,7 +130,6 @@ function Standards() {
       <Row gutter={[24, 0]}>
         <Col xs={24} xl={24}>
           <Card
-            bordered={false}
             className="criclebox tablespace mb-24"
             title="Bộ Tiêu Chuẩn"
             extra={

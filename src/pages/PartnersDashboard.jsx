@@ -140,7 +140,6 @@ function PartnersDashboard() {
       <Row gutter={[24, 0]}>
         <Col xs={24} xl={12}>
           <Card
-            bordered={false}
             className="criclebox tablespace mb-24"
             title="Partners Overview"
             extra={
@@ -165,7 +164,6 @@ function PartnersDashboard() {
         </Col>
         <Col xs={24} xl={12}>
           <Card
-            bordered={false}
             className="criclebox mb-24"
             title="Partner Locations"
           >

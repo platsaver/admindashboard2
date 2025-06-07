@@ -411,7 +411,6 @@ function Billing() {
         </Col>
         <Col span={24} md={8} className="mb-24">
           <Card
-            bordered={false}
             className="header-solid h-full ant-invoice-card"
             title={[<h6 className="font-semibold m-0">Invoices</h6>]}
             extra={[
@@ -443,7 +442,6 @@ function Billing() {
         <Col span={24} md={16} className="mb-24">
           <Card
             className="header-solid h-full"
-            bordered={false}
             title={[<h6 className="font-semibold m-0">Billing Information</h6>]}
             bodyStyle={{ paddingTop: "0" }}
           >
@@ -481,7 +479,6 @@ function Billing() {
         </Col>
         <Col span={24} md={8} className="mb-24">
           <Card
-            bordered={false}
             bodyStyle={{ paddingTop: 0 }}
             className="header-solid h-full  ant-list-yes"
             title={<h6 className="font-semibold m-0">Your Transactions</h6>}
