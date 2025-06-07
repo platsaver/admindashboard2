@@ -132,32 +132,6 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
         <Menu.Item key="2">
-          <NavLink to="/tables">
-            <span
-              className="icon"
-              style={{
-                background: page === "tables" ? color : "",
-              }}
-            >
-              {tables}
-            </span>
-            <span className="label">Tables</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="3">
-          <NavLink to="/billing">
-            <span
-              className="icon"
-              style={{
-                background: page === "billing" ? color : "",
-              }}
-            >
-              {billing}
-            </span>
-            <span className="label">Billing</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="4">
           <NavLink to="/partners">
             <span
               className="icon"
@@ -170,7 +144,7 @@ function Sidenav({ color }) {
             <span className="label">Partners</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="5">
+        <Menu.Item key="3">
           <NavLink to="/standards">
             <span
               className="icon"
@@ -183,7 +157,7 @@ function Sidenav({ color }) {
             <span className="label">Standards</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="6">
+        <Menu.Item key="4">
           <NavLink to="/metrics">
             <span
               className="icon"
@@ -196,7 +170,7 @@ function Sidenav({ color }) {
             <span className="label">Metrics</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="6">
+        <Menu.Item key="5">
           <NavLink to="/activities">
             <span
               className="icon"
@@ -209,7 +183,7 @@ function Sidenav({ color }) {
             <span className="label">Activities</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="7">
+        <Menu.Item key="6">
           <NavLink to="/reports">
             <span
               className="icon"

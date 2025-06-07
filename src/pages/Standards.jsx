@@ -7,6 +7,9 @@ import {
   Input,
   Space,
   Tag,
+  Drawer,
+  Button,
+  Descriptions,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useState } from "react";
@@ -103,8 +106,10 @@ const data = [
 function Standards() {
   const [filterCategory, setFilterCategory] = useState("all");
   const [searchText, setSearchText] = useState("");
-  const [pageSize, setPageSize] = useState(5); 
-  const [currentPage, setCurrentPage] = useState(1); 
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedStandard, setSelectedStandard] = useState(null);
 
   const handleFilterChange = (e) => {
     setFilterCategory(e.target.value);
@@ -116,6 +121,24 @@ function Standards() {
     setCurrentPage(1);
   };
 
+  const handleRowClick = (record) => {
+    setSelectedStandard(record);
+    setDrawerVisible(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedStandard(null);
+  };
+
+  const handleEdit = (record) => {
+    console.log("Edit standard:", record);
+  };
+
+  const handleDelete = (record) => {
+    console.log("Delete standard:", record);
+  };
+
   const filteredData = data.filter((item) => {
     const matchesCategory =
       filterCategory === "all" || item.category === filterCategory;
@@ -125,7 +148,6 @@ function Standards() {
     return matchesCategory && matchesSearch;
   });
 
-  // Handle pagination change
   const handlePaginationChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -173,11 +195,64 @@ function Standards() {
                     `${range[0]}-${range[1]} of ${total} items`,
                 }}
                 className="ant-border-space"
+                onRow={(record) => ({
+                  onClick: () => handleRowClick(record),
+                })}
               />
             </div>
           </Card>
         </Col>
       </Row>
+      <Drawer
+        title={selectedStandard?.name || "Chi tiết tiêu chuẩn"}
+        placement="right"
+        onClose={handleCloseDrawer}
+        open={drawerVisible}
+        width={400}
+      >
+        {selectedStandard && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="Tên tiêu chuẩn">
+                {selectedStandard.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Danh mục">
+                {selectedStandard.category}
+              </Descriptions.Item>
+              <Descriptions.Item label="Mô tả">
+                {selectedStandard.description}
+              </Descriptions.Item>
+              <Descriptions.Item label="Mức độ tuân thủ">
+                <Tag color={selectedStandard.complianceLevel === "Nâng cao" ? "blue" : "green"}>
+                  {selectedStandard.complianceLevel}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Hướng dẫn">
+                {selectedStandard.guidelines}
+              </Descriptions.Item>
+              <Descriptions.Item label="Tài liệu">
+                <a href={selectedStandard.documents} target="_blank" rel="noopener noreferrer">
+                  Xem tài liệu
+                </a>
+              </Descriptions.Item>
+            </Descriptions>
+            <Button
+              type="primary"
+              onClick={() => handleEdit(selectedStandard)}
+              style={{ marginBottom: "8px" }}
+            >
+              Chỉnh sửa
+            </Button>
+            <Button
+              type="primary"
+              danger
+              onClick={() => handleDelete(selectedStandard)}
+            >
+              Xóa
+            </Button>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }
