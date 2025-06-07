@@ -3,9 +3,7 @@ import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { Link } from "react-router-dom";
 
-// Fix Leaflet default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -15,7 +13,6 @@ L.Icon.Default.mergeOptions({
 
 const { Title } = Typography;
 
-// Sample partner data
 const partnerData = [
   {
     key: "1",
@@ -120,7 +117,7 @@ function PartnersDashboard() {
   const [selectedPartner, setSelectedPartner] = useState(null);
 
   useEffect(() => {
-    setIsClient(true); // Ensure map renders only on client
+    setIsClient(true); 
   }, []);
 
   const onFilterChange = (e) => {
@@ -138,12 +135,10 @@ function PartnersDashboard() {
   };
 
   const handleEdit = (record) => {
-    // Implement edit functionality here
     console.log("Edit partner:", record);
   };
 
   const handleDelete = (record) => {
-    // Implement delete functionality here
     console.log("Delete partner:", record);
   };
 
