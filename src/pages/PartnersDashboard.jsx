@@ -270,14 +270,14 @@ function PartnersDashboard() {
               onClick={() => handleEdit(selectedPartner)}
               style={{ marginBottom: "8px" }}
             >
-              Edit
+              Chỉnh sửa
             </Button>
             <Button
               type="primary"
               danger
               onClick={() => handleDelete(selectedPartner)}
             >
-              Delete
+              Xóa
             </Button>
           </div>
         )}

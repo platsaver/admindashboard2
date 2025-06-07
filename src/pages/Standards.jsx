@@ -16,14 +16,14 @@ import { useState } from "react";
 
 const columns = [
   {
-    title: "Standards name",
+    title: "Tên tiêu chuẩn",
     dataIndex: "name",
     key: "name",
     width: "15%",
     sorter: (a, b) => a.name.localeCompare(b.name),
   },
   {
-    title: "Category",
+    title: "Phân loại",
     dataIndex: "category",
     key: "category",
     filters: [
@@ -34,32 +34,17 @@ const columns = [
     onFilter: (value, record) => record.category === value,
   },
   {
-    title: "Description",
+    title: "Mô tả",
     dataIndex: "description",
     key: "description",
     width: "30%",
   },
   {
-    title: "Compliance level",
+    title: "Mức độ chấp hành",
     dataIndex: "complianceLevel",
     key: "complianceLevel",
     render: (level) => (
       <Tag color={level === "Nâng cao" ? "blue" : "green"}>{level}</Tag>
-    ),
-  },
-  {
-    title: "Guidelines",
-    dataIndex: "guidelines",
-    key: "guidelines",
-  },
-  {
-    title: "Documents",
-    dataIndex: "documents",
-    key: "documents",
-    render: (docs) => (
-      <a href={docs} target="_blank" rel="noopener noreferrer">
-        Xem tài liệu
-      </a>
     ),
   },
 ];
@@ -191,8 +176,6 @@ function Standards() {
                   onChange: handlePaginationChange,
                   showSizeChanger: true,
                   pageSizeOptions: ["5", "10", "20"],
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${total} items`,
                 }}
                 className="ant-border-space"
                 onRow={(record) => ({
