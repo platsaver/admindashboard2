@@ -1,24 +1,26 @@
 import { Card, Row, Col, Statistic, Table, Button, Avatar, Typography, Tag } from 'antd';
-import { useState } from 'react';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable } from '@dnd-kit/core';
+import { useState, useCallback } from 'react';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
-const SortableTask = ({ id, title, description, priority, getPriorityColor }) => {
+const SortableTask = ({ id, title, description, priority, getPriorityColor, isDragging }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition || 'transform 200ms ease, opacity 200ms ease',
     marginBottom: '8px',
     background: '#fff',
     padding: '16px',
     borderRadius: '8px',
     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
     border: '1px solid #e8e8e8',
+    opacity: isDragging ? 0.5 : 1,
+    willChange: 'transform, opacity',
   };
 
   return (
@@ -48,6 +50,7 @@ const DroppableColumn = ({ id, children, isOver }) => {
         minHeight: '400px',
         padding: '8px',
         borderRadius: '4px',
+        backgroundColor: isOver ? 'rgba(0, 0, 0, 0.05)' : '#fafafa',
         transition: 'background-color 0.2s ease',
       }}
     >
@@ -70,7 +73,7 @@ const Dashboard = () => {
     ],
   });
 
-  const [activeId, setActiveId] = useState(null);
+  const [activeTask, setActiveTask] = useState(null);
 
   const summaryData = {
     systemStatus: 'Ổn định',
@@ -192,19 +195,26 @@ const Dashboard = () => {
   };
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  const handleDragStart = (event) => {
-    setActiveId(event.active.id);
-  };
+  const handleDragStart = useCallback((event) => {
+    const task = Object.values(tasks)
+      .flat()
+      .find((t) => t.id === event.active.id);
+    setActiveTask(task);
+  }, [tasks]);
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
-    setActiveId(null);
+    setActiveTask(null);
 
     if (!over) return;
 
@@ -227,7 +237,7 @@ const Dashboard = () => {
       const sourceIndex = column.findIndex((task) => task.id === sourceId);
       const destinationIndex = column.findIndex((task) => task.id === overId);
 
-      if (sourceIndex !== destinationIndex) {
+      if (sourceIndex !== destinationIndex && destinationIndex !== -1) {
         const [movedTask] = column.splice(sourceIndex, 1);
         column.splice(destinationIndex, 0, movedTask);
 
@@ -255,7 +265,7 @@ const Dashboard = () => {
         [destinationColumnId]: destinationColumn,
       });
     }
-  };
+  }, [tasks]);
 
   const columns = {
     'todo': { name: 'Cần làm', color: '#1890ff' },
@@ -321,15 +331,15 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
-      <div style={{paddingTop: '32px', paddingBottom: '32px'}}>
+      <div style={{ paddingTop: '32px', paddingBottom: '32px' }}>
         <Card
-        title={<Title level={4} className="text-gray-800">Nhiệm vụ</Title>}
-        className="shadow-lg rounded-lg bg-white"
-        style={{ border: '1px solid #e8e8e8' }}
+          title={<Title level={4} className="text-gray-800">Nhiệm vụ</Title>}
+          className="shadow-lg rounded-lg bg-white"
+          style={{ border: '1px solid #e8e8e8' }}
         >
-          <DndContext 
-            sensors={sensors} 
-            collisionDetection={closestCenter} 
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
@@ -349,8 +359,8 @@ const Dashboard = () => {
                       borderRadius: '8px',
                     }}
                   >
-                    <SortableContext items={taskList.map(task => task.id)} strategy={verticalListSortingStrategy}>
-                      <DroppableColumn id={columnId} isOver={activeId && activeId !== columnId}>
+                    <SortableContext items={taskList.map((task) => task.id)} strategy={verticalListSortingStrategy}>
+                      <DroppableColumn id={columnId} isOver={activeTask && activeTask.id !== columnId}>
                         {taskList.map((task) => (
                           <SortableTask
                             key={task.id}
@@ -359,6 +369,7 @@ const Dashboard = () => {
                             description={task.description}
                             priority={task.priority}
                             getPriorityColor={getPriorityColor}
+                            isDragging={activeTask && activeTask.id === task.id}
                           />
                         ))}
                       </DroppableColumn>
@@ -367,6 +378,18 @@ const Dashboard = () => {
                 </Col>
               ))}
             </Row>
+            <DragOverlay>
+              {activeTask ? (
+                <SortableTask
+                  id={activeTask.id}
+                  title={activeTask.title}
+                  description={activeTask.description}
+                  priority={activeTask.priority}
+                  getPriorityColor={getPriorityColor}
+                  isDragging={true}
+                />
+              ) : null}
+            </DragOverlay>
           </DndContext>
         </Card>
       </div>
