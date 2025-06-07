@@ -10,9 +10,16 @@ import {
   Drawer,
   Button,
   Descriptions,
+  Form,
+  Input as FormInput,
+  Select,
+  Modal,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useState } from "react";
+
+const { Option } = Select;
+const { confirm } = Modal;
 
 const columns = [
   {
@@ -49,7 +56,7 @@ const columns = [
   },
 ];
 
-const data = [
+const initialData = [
   {
     key: "1",
     name: "ISO 9001",
@@ -95,6 +102,9 @@ function Standards() {
   const [currentPage, setCurrentPage] = useState(1);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedStandard, setSelectedStandard] = useState(null);
+  const [data, setData] = useState(initialData);
+  const [isEditing, setIsEditing] = useState(false);
+  const [form] = Form.useForm();
 
   const handleFilterChange = (e) => {
     setFilterCategory(e.target.value);
@@ -109,19 +119,49 @@ function Standards() {
   const handleRowClick = (record) => {
     setSelectedStandard(record);
     setDrawerVisible(true);
+    setIsEditing(false);
+    form.setFieldsValue(record);
   };
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedStandard(null);
+    setIsEditing(false);
+    form.resetFields();
   };
 
   const handleEdit = (record) => {
-    console.log("Edit standard:", record);
+    setIsEditing(true);
+    form.setFieldsValue(record);
+  };
+
+  const handleSave = () => {
+    form.validateFields().then((values) => {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.key === selectedStandard.key ? { ...item, ...values } : item
+        )
+      );
+      setIsEditing(false);
+      setSelectedStandard({ ...selectedStandard, ...values });
+    });
   };
 
   const handleDelete = (record) => {
-    console.log("Delete standard:", record);
+    confirm({
+      title: "Xác nhận xóa",
+      content: `Bạn có chắc chắn muốn xóa tiêu chuẩn "${record.name}" không?`,
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Hủy",
+      onOk() {
+        setData((prevData) => prevData.filter((item) => item.key !== record.key));
+        setDrawerVisible(false);
+        setSelectedStandard(null);
+      },
+      onCancel() {
+      },
+    });
   };
 
   const filteredData = data.filter((item) => {
@@ -187,13 +227,13 @@ function Standards() {
         </Col>
       </Row>
       <Drawer
-        title={selectedStandard?.name || "Chi tiết tiêu chuẩn"}
+        title={isEditing ? "Chỉnh sửa tiêu chuẩn" : (selectedStandard?.name || "Chi tiết tiêu chuẩn")}
         placement="right"
         onClose={handleCloseDrawer}
         open={drawerVisible}
         width={400}
       >
-        {selectedStandard && (
+        {selectedStandard && !isEditing && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Descriptions column={1} bordered>
               <Descriptions.Item label="Tên tiêu chuẩn">
@@ -234,6 +274,72 @@ function Standards() {
               Xóa
             </Button>
           </div>
+        )}
+        {selectedStandard && isEditing && (
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSave}
+            initialValues={selectedStandard}
+          >
+            <Form.Item
+              name="name"
+              label="Tên tiêu chuẩn"
+              rules={[{ required: true, message: "Vui lòng nhập tên tiêu chuẩn!" }]}
+            >
+              <FormInput />
+            </Form.Item>
+            <Form.Item
+              name="category"
+              label="Danh mục"
+              rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
+            >
+              <Select>
+                <Option value="Sản phẩm">Sản phẩm</Option>
+                <Option value="Quy trình">Quy trình</Option>
+                <Option value="An toàn">An toàn</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Mô tả"
+              rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+            >
+              <FormInput.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item
+              name="complianceLevel"
+              label="Mức độ tuân thủ"
+              rules={[{ required: true, message: "Vui lòng chọn mức độ tuân thủ!" }]}
+            >
+              <Select>
+                <Option value="Cơ bản">Cơ bản</Option>
+                <Option value="Nâng cao">Nâng cao</Option>
+dsl              </Select>
+            </Form.Item>
+            <Form.Item
+              name="guidelines"
+              label="Hướng dẫn"
+              rules={[{ required: true, message: "Vui lòng nhập hướng dẫn!" }]}
+            >
+              <FormInput.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item
+              name="documents"
+              label="Tài liệu"
+              rules={[{ required: true, message: "Vui lòng nhập liên kết tài liệu!" }]}
+            >
+              <FormInput />
+            </Form.Item>
+            <Form.Item>
+              <Space>
+                <Button type="primary" htmlType="submit">
+                  Lưu
+                </Button>
+                <Button onClick={handleCloseDrawer}>Hủy</Button>
+              </Space>
+            </Form.Item>
+          </Form>
         )}
       </Drawer>
     </div>
