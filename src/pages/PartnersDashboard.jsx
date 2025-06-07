@@ -237,28 +237,6 @@ function PartnersDashboard() {
               <Descriptions.Item label="Coordinates">
                 {selectedPartner.coordinates.join(", ")}
               </Descriptions.Item>
-              <Descriptions.Item label="Personnel">
-                <Table
-                  columns={[
-                    { title: "Name", dataIndex: "name", key: "name" },
-                    { title: "Role", dataIndex: "role", key: "role" },
-                    { title: "Email", dataIndex: "email", key: "email" },
-                    {
-                      title: "Status",
-                      dataIndex: "status",
-                      key: "status",
-                      render: (status) => (
-                        <Button type={status === "Active" ? "primary" : "default"} className="tag-primary">
-                          {status}
-                        </Button>
-                      ),
-                    },
-                  ]}
-                  dataSource={selectedPartner.personnel}
-                  pagination={false}
-                  size="small"
-                />
-              </Descriptions.Item>
             </Descriptions>
             <Button
               type="primary"
