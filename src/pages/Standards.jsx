@@ -11,7 +11,6 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
-
 const columns = [
   {
     title: "Standards name",
@@ -104,13 +103,17 @@ const data = [
 function Standards() {
   const [filterCategory, setFilterCategory] = useState("all");
   const [searchText, setSearchText] = useState("");
+  const [pageSize, setPageSize] = useState(5); 
+  const [currentPage, setCurrentPage] = useState(1); 
 
   const handleFilterChange = (e) => {
     setFilterCategory(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleSearch = (value) => {
     setSearchText(value);
+    setCurrentPage(1);
   };
 
   const filteredData = data.filter((item) => {
@@ -121,6 +124,12 @@ function Standards() {
       .includes(searchText.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  // Handle pagination change
+  const handlePaginationChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
 
   return (
     <div className="tabled">
@@ -153,7 +162,16 @@ function Standards() {
               <Table
                 columns={columns}
                 dataSource={filteredData}
-                pagination={false}
+                pagination={{
+                  current: currentPage,
+                  pageSize: pageSize,
+                  total: filteredData.length,
+                  onChange: handlePaginationChange,
+                  showSizeChanger: true,
+                  pageSizeOptions: ["5", "10", "20"],
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} items`,
+                }}
                 className="ant-border-space"
               />
             </div>
