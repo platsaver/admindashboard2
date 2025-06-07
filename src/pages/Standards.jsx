@@ -19,7 +19,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 const { Option } = Select;
-const { confirm } = Modal;
 
 const columns = [
   {
@@ -104,6 +103,7 @@ function Standards() {
   const [selectedStandard, setSelectedStandard] = useState(null);
   const [data, setData] = useState(initialData);
   const [isEditing, setIsEditing] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [form] = Form.useForm();
 
   const handleFilterChange = (e) => {
@@ -117,6 +117,9 @@ function Standards() {
   };
 
   const handleRowClick = (record) => {
+    console.log("Row clicked with record:", record);
+    console.log("Record keys:", Object.keys(record));
+    console.log("Record name:", record.name);
     setSelectedStandard(record);
     setDrawerVisible(true);
     setIsEditing(false);
@@ -147,21 +150,21 @@ function Standards() {
     });
   };
 
-  const handleDelete = (record) => {
-    confirm({
-      title: "Xác nhận xóa",
-      content: `Bạn có chắc chắn muốn xóa tiêu chuẩn "${record.name}" không?`,
-      okText: "Xóa",
-      okType: "danger",
-      cancelText: "Hủy",
-      onOk() {
-        setData((prevData) => prevData.filter((item) => item.key !== record.key));
-        setDrawerVisible(false);
-        setSelectedStandard(null);
-      },
-      onCancel() {
-      },
+  const handleDelete = () => {
+    console.log("Confirming delete for:", selectedStandard.name);
+    setData((prevData) => {
+      const newData = prevData.filter((item) => item.key !== selectedStandard.key);
+      console.log("New data after delete:", newData);
+      return newData;
     });
+    setDeleteModalVisible(false);
+    setDrawerVisible(false);
+    setSelectedStandard(null);
+  };
+
+  const showDeleteModal = () => {
+    console.log("Showing delete modal for:", selectedStandard);
+    setDeleteModalVisible(true);
   };
 
   const filteredData = data.filter((item) => {
@@ -269,7 +272,11 @@ function Standards() {
             <Button
               type="primary"
               danger
-              onClick={() => handleDelete(selectedStandard)}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Delete button clicked");
+                showDeleteModal();
+              }}
             >
               Xóa
             </Button>
@@ -315,7 +322,7 @@ function Standards() {
               <Select>
                 <Option value="Cơ bản">Cơ bản</Option>
                 <Option value="Nâng cao">Nâng cao</Option>
-dsl              </Select>
+              </Select>
             </Form.Item>
             <Form.Item
               name="guidelines"
@@ -342,6 +349,20 @@ dsl              </Select>
           </Form>
         )}
       </Drawer>
+      
+      <Modal
+        title="Xác nhận xóa"
+        open={deleteModalVisible}
+        onOk={handleDelete}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Xóa"
+        cancelText="Hủy"
+        okType="danger"
+      >
+        <p>
+          Bạn có chắc chắn muốn xóa tiêu chuẩn "{selectedStandard?.name}" không?
+        </p>
+      </Modal>
     </div>
   );
 }
