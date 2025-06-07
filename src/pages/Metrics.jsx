@@ -241,8 +241,8 @@ function Metrics() {
           </Card>
         </Col>
 
-        {/* Biểu đồ trực quan - 1/4 */}
-        <Col xs={24} md={6}>
+        {/* Biểu đồ trực quan - 1/2 */}
+        <Col xs={24} md={12}>
           <Card className="criclebox mb-24" title="Phân bố Chỉ Số">
             <div id="chart">
               <ReactApexChart
@@ -256,23 +256,8 @@ function Metrics() {
           </Card>
         </Col>
 
-        {/* Mức độ hoàn thành - 1/4 */}
-        <Col xs={24} md={6}>
-          <Card className="criclebox mb-24" title="Mức Độ Hoàn Thành">
-            {filteredData.map((item) => (
-              <div key={item.key} style={{ marginBottom: 16 }}>
-                <Title level={5}>{item.name}</Title>
-                <Progress
-                  percent={((item.value / item.target) * 100).toFixed(0)}
-                  status={item.value >= item.target ? "success" : "normal"}
-                />
-              </div>
-            ))}
-          </Card>
-        </Col>
-
-        {/* Xu hướng - 2/3 */}
-        <Col xs={24} md={16}>
+        {/* Xu hướng - 1/2 */}
+        <Col xs={24} md={12}>
           <Card className="criclebox mb-24" title="Xu Hướng">
             <div id="chart">
               <ReactApexChart
@@ -291,17 +276,21 @@ function Metrics() {
           </Card>
         </Col>
 
-        {/* Dự báo - 1/3 */}
-        <Col xs={24} md={8}>
-          <Card className="criclebox mb-24" title="Dự Báo">
-            <Paragraph>
-              Xu hướng giảm nhẹ trong chỉ số "Tỷ lệ lỗi sản phẩm" dự kiến tiếp tục
-              trong 3 tháng tới. Cần tăng cường kiểm soát chất lượng.
-            </Paragraph>
-            <Paragraph>
-              Hiệu suất máy móc dự kiến đạt 88% vào tháng 6/2025 nếu duy trì bảo trì
-              định kỳ.
-            </Paragraph>
+        {/* Dự báo và Mức độ hoàn thành - 1/2 */}
+        <Col xs={24} md={12}>
+          <Card className="criclebox mb-24">
+            <div style={{ marginTop: 24 }}>
+              <Title level={4}>Mức Độ Hoàn Thành</Title>
+              {filteredData.map((item) => (
+                <div key={item.key} style={{ marginBottom: 16 }}>
+                  <Title level={5}>{item.name}</Title>
+                  <Progress
+                    percent={((item.value / item.target) * 100).toFixed(0)}
+                    status={item.value >= item.target ? "success" : "normal"}
+                  />
+                </div>
+              ))}
+            </div>
           </Card>
         </Col>
       </Row>
