@@ -153,7 +153,7 @@ function PartnersDashboard() {
         <Col xs={24} xl={12}>
           <Card
             className="criclebox tablespace mb-24"
-            title="Partners Overview"
+            title="Danh sách đối tác"
             extra={
               <Radio.Group onChange={onFilterChange} defaultValue="all">
                 <Radio.Button value="all">All</Radio.Button>

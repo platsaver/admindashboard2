@@ -15,7 +15,7 @@ import {
   Select,
   Modal,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 const { Option } = Select;
@@ -103,6 +103,7 @@ function Standards() {
   const [selectedStandard, setSelectedStandard] = useState(null);
   const [data, setData] = useState(initialData);
   const [isEditing, setIsEditing] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -123,6 +124,7 @@ function Standards() {
     setSelectedStandard(record);
     setDrawerVisible(true);
     setIsEditing(false);
+    setIsAdding(false);
     form.setFieldsValue(record);
   };
 
@@ -130,23 +132,44 @@ function Standards() {
     setDrawerVisible(false);
     setSelectedStandard(null);
     setIsEditing(false);
+    setIsAdding(false);
     form.resetFields();
   };
 
   const handleEdit = (record) => {
     setIsEditing(true);
+    setIsAdding(false);
     form.setFieldsValue(record);
+  };
+
+  const handleAddNew = () => {
+    setIsAdding(true); 
+    setIsEditing(false);
+    setSelectedStandard(null);
+    setDrawerVisible(true);
+    form.resetFields(); 
   };
 
   const handleSave = () => {
     form.validateFields().then((values) => {
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.key === selectedStandard.key ? { ...item, ...values } : item
-        )
-      );
+      if (isAdding) {
+        const newStandard = {
+          key: (data.length + 1).toString(),
+          ...values,
+        };
+        setData((prevData) => [...prevData, newStandard]);
+      } else {
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.key === selectedStandard.key ? { ...item, ...values } : item
+          )
+        );
+        setSelectedStandard({ ...selectedStandard, ...values });
+      }
       setIsEditing(false);
-      setSelectedStandard({ ...selectedStandard, ...values });
+      setIsAdding(false);
+      setDrawerVisible(false);
+      form.resetFields();
     });
   };
 
@@ -190,6 +213,12 @@ function Standards() {
             title="Bộ Tiêu Chuẩn"
             extra={
               <Space>
+                <Button
+                  type="primary"
+                  onClick={handleAddNew}
+                >
+                  Thêm
+                </Button>
                 <Radio.Group
                   onChange={handleFilterChange}
                   defaultValue="all"
@@ -230,13 +259,13 @@ function Standards() {
         </Col>
       </Row>
       <Drawer
-        title={isEditing ? "Chỉnh sửa tiêu chuẩn" : (selectedStandard?.name || "Chi tiết tiêu chuẩn")}
+        title={isAdding ? "Thêm tiêu chuẩn mới" : isEditing ? "Chỉnh sửa tiêu chuẩn" : (selectedStandard?.name || "Chi tiết tiêu chuẩn")}
         placement="right"
         onClose={handleCloseDrawer}
         open={drawerVisible}
         width={400}
       >
-        {selectedStandard && !isEditing && (
+        {selectedStandard && !isEditing && !isAdding && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Descriptions column={1} bordered>
               <Descriptions.Item label="Tên tiêu chuẩn">
@@ -272,22 +301,18 @@ function Standards() {
             <Button
               type="primary"
               danger
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log("Delete button clicked");
-                showDeleteModal();
-              }}
+              onClick={showDeleteModal}
             >
               Xóa
             </Button>
           </div>
         )}
-        {selectedStandard && isEditing && (
+        {(isEditing || isAdding) && (
           <Form
             form={form}
             layout="vertical"
             onFinish={handleSave}
-            initialValues={selectedStandard}
+            initialValues={isAdding ? {} : selectedStandard}
           >
             <Form.Item
               name="name"
@@ -349,7 +374,7 @@ function Standards() {
           </Form>
         )}
       </Drawer>
-      
+
       <Modal
         title="Xác nhận xóa"
         open={deleteModalVisible}
