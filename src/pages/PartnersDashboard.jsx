@@ -1,4 +1,4 @@
-import { Row, Col, Card, Radio, Table, Button, Avatar, Typography } from "antd";
+import { Row, Col, Card, Radio, Table, Button, Typography } from "antd";
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
