@@ -375,15 +375,9 @@ function Header({
               </div>
             </div>
           </Drawer>
-          <Link to="/sign-in" className="btn-sign-in">
+          <Link to="/#" className="btn-sign-in">
             {profile}
-            <span>Sign in</span>
           </Link>
-          <Input
-            className="header-search"
-            placeholder="Type here..."
-            prefix={<SearchOutlined />}
-          />
         </Col>
       </Row>
     </>

@@ -1,7 +1,7 @@
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
-import { SafetyCertificateOutlined, BarChartOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined, BarChartOutlined, CalendarOutlined } from "@ant-design/icons";
 
 function Sidenav({ color }) {
   const { pathname } = useLocation();
@@ -119,19 +119,6 @@ function Sidenav({ color }) {
       <hr />
       <Menu theme="light" mode="inline">
         <Menu.Item key="1">
-          <NavLink to="/dashboard">
-            <span
-              className="icon"
-              style={{
-                background: page === "dashboard" ? color : "",
-              }}
-            >
-              {dashboard}
-            </span>
-            <span className="label">Dashboard</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="2">
           <NavLink to="/partners">
             <span
               className="icon"
@@ -144,7 +131,7 @@ function Sidenav({ color }) {
             <span className="label">Partners</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="3">
+        <Menu.Item key="2">
           <NavLink to="/standards">
             <span
               className="icon"
@@ -157,7 +144,7 @@ function Sidenav({ color }) {
             <span className="label">Standards</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="4">
+        <Menu.Item key="3">
           <NavLink to="/metrics">
             <span
               className="icon"
@@ -170,7 +157,7 @@ function Sidenav({ color }) {
             <span className="label">Metrics</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="5">
+        <Menu.Item key="4">
           <NavLink to="/activities">
             <span
               className="icon"
@@ -183,7 +170,7 @@ function Sidenav({ color }) {
             <span className="label">Activities</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="6">
+        <Menu.Item key="5">
           <NavLink to="/reports">
             <span
               className="icon"
@@ -196,7 +183,7 @@ function Sidenav({ color }) {
             <span className="label">Reports</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="7">
+        <Menu.Item key="6">
           <NavLink to="/events">
             <span
               className="icon"
@@ -204,15 +191,15 @@ function Sidenav({ color }) {
                 background: page === "events" ? color : "",
               }}
             >
-              <SafetyCertificateOutlined />
+              <CalendarOutlined />
             </span>
             <span className="label">Events</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item className="menu-item-header" key="8">
+        <Menu.Item className="menu-item-header" key="7">
           Account Pages
         </Menu.Item>
-        <Menu.Item key="9">
+        <Menu.Item key="8">
           <NavLink to="/profile">
             <span
               className="icon"

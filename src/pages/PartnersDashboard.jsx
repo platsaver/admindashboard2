@@ -1,4 +1,4 @@
-import { Row, Col, Card, Radio, Table, Button, Typography } from "antd";
+import { Row, Col, Card, Radio, Table, Button, Typography, Drawer, Descriptions } from "antd";
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -84,11 +84,6 @@ const columns = [
     key: "location",
     width: "20%",
   },
-  {
-    title: "ACTION",
-    key: "action",
-    render: () => <Link to="#">View Details</Link>,
-  },
 ];
 
 const expandedRowRender = (record) => {
@@ -121,6 +116,8 @@ const expandedRowRender = (record) => {
 function PartnersDashboard() {
   const [filter, setFilter] = useState("all");
   const [isClient, setIsClient] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedPartner, setSelectedPartner] = useState(null);
 
   useEffect(() => {
     setIsClient(true); // Ensure map renders only on client
@@ -128,6 +125,26 @@ function PartnersDashboard() {
 
   const onFilterChange = (e) => {
     setFilter(e.target.value);
+  };
+
+  const handleRowClick = (record) => {
+    setSelectedPartner(record);
+    setDrawerVisible(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedPartner(null);
+  };
+
+  const handleEdit = (record) => {
+    // Implement edit functionality here
+    console.log("Edit partner:", record);
+  };
+
+  const handleDelete = (record) => {
+    // Implement delete functionality here
+    console.log("Delete partner:", record);
   };
 
   const filteredData = partnerData.filter((partner) => {
@@ -158,6 +175,9 @@ function PartnersDashboard() {
                 expandable={{ expandedRowRender }}
                 pagination={false}
                 className="ant-border-space"
+                onRow={(record) => ({
+                  onClick: () => handleRowClick(record),
+                })}
               />
             </div>
           </Card>
@@ -197,6 +217,71 @@ function PartnersDashboard() {
           </Card>
         </Col>
       </Row>
+      <Drawer
+        title={selectedPartner?.name || "Partner Details"}
+        placement="right"
+        onClose={handleCloseDrawer}
+        open={drawerVisible}
+        width={400}
+      >
+        {selectedPartner && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="Partner Name">
+                {selectedPartner.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Industry">
+                {selectedPartner.industry}
+              </Descriptions.Item>
+              <Descriptions.Item label="Contact">
+                {selectedPartner.contact}
+              </Descriptions.Item>
+              <Descriptions.Item label="Location">
+                {selectedPartner.location}
+              </Descriptions.Item>
+              <Descriptions.Item label="Coordinates">
+                {selectedPartner.coordinates.join(", ")}
+              </Descriptions.Item>
+              <Descriptions.Item label="Personnel">
+                <Table
+                  columns={[
+                    { title: "Name", dataIndex: "name", key: "name" },
+                    { title: "Role", dataIndex: "role", key: "role" },
+                    { title: "Email", dataIndex: "email", key: "email" },
+                    {
+                      title: "Status",
+                      dataIndex: "status",
+                      key: "status",
+                      render: (status) => (
+                        <Button type={status === "Active" ? "primary" : "default"} className="tag-primary">
+                          {status}
+                        </Button>
+                      ),
+                    },
+                  ]}
+                  dataSource={selectedPartner.personnel}
+                  pagination={false}
+                  size="small"
+                />
+              </Descriptions.Item>
+            </Descriptions>
+            <Button
+              type="primary"
+              onClick={() => handleEdit(selectedPartner)}
+              style={{ marginBottom: "8px" }}
+            >
+              Edit
+            </Button>
+            <Button
+              type="primary"
+              danger
+              onClick={() => handleDelete(selectedPartner)}
+            >
+              Delete
+            </Button>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }
