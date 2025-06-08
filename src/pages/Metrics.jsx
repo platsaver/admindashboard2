@@ -193,7 +193,7 @@ function Metrics() {
     <div className="metrics">
       <Row gutter={[24, 24]}>
         {/* Bảng chỉ số - 1/2 */}
-        <Col xs={24} md={12}>
+        <Col xs={24} md={16}>
           <Card
             className="criclebox tablespace mb-24"
             extra={
@@ -242,7 +242,7 @@ function Metrics() {
         </Col>
 
         {/* Biểu đồ trực quan - 1/2 */}
-        <Col xs={24} md={12}>
+        <Col xs={24} md={8}>
           <Card className="criclebox mb-24" title="Phân bố Chỉ Số">
             <div id="chart">
               <ReactApexChart
