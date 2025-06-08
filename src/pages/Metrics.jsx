@@ -4,22 +4,24 @@ import {
   Card,
   Table,
   Select,
-  DatePicker,
   Button,
   Space,
   Progress,
   Typography,
+  Drawer,
+  Form,
+  Input as FormInput,
+  Modal,
 } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
+import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import ReactApexChart from "react-apexcharts";
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import moment from "moment";
 
 const { Title, Paragraph } = Typography;
-const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 const columns = [
   {
@@ -53,7 +55,7 @@ const columns = [
   },
 ];
 
-const data = [
+const initialData = [
   {
     key: "1",
     name: "Tỷ lệ lỗi sản phẩm",
@@ -87,7 +89,7 @@ const data = [
 const trendData = [
   { date: "2025-01", value: 2.8 },
   { date: "2025-02", value: 2.6 },
-  { date: "2025-03", value: 2.5 },
+  { date: "2025-03", value: 2.7 },
   { date: "2025-04", value: 2.4 },
   { date: "2025-05", value: 2.3 },
 ];
@@ -101,18 +103,37 @@ const pieData = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 function Metrics() {
+  const [data, setData] = useState(initialData);
   const [selectedGroup, setSelectedGroup] = useState("all");
-  const [dateRange, setDateRange] = useState([
-    moment().subtract(30, "days"),
-    moment(),
-  ]);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [form] = Form.useForm();
 
   const handleGroupChange = (value) => {
     setSelectedGroup(value);
   };
 
-  const handleDateChange = (dates) => {
-    setDateRange(dates);
+  const handleAddNew = () => {
+    setDrawerVisible(true);
+    form.resetFields();
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerVisible(false);
+    form.resetFields();
+  };
+
+  const handleSave = () => {
+    form.validateFields().then((values) => {
+      const newMetric = {
+        key: (data.length + 1).toString(),
+        ...values,
+        value: parseFloat(values.value),
+        target: parseFloat(values.target),
+      };
+      setData((prevData) => [...prevData, newMetric]);
+      setDrawerVisible(false);
+      form.resetFields();
+    });
   };
 
   const filteredData = data.filter(
@@ -128,8 +149,11 @@ function Metrics() {
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    doc.text("Báo cáo Bộ Chỉ Số", 10, 10);
+    // Set font to support Vietnamese characters
+    doc.setFont("DejaVuSans", "normal");
+    doc.text("Báo cáo Bộ Chỉ Số", 14, 20);
     doc.autoTable({
+      startY: 30,
       head: [["Chỉ số", "Nhóm", "Giá trị", "Tiêu chuẩn"]],
       body: filteredData.map((item) => [
         item.name,
@@ -137,6 +161,8 @@ function Metrics() {
         item.value,
         item.target,
       ]),
+      styles: { font: "DejaVuSans", fontSize: 10 },
+      headStyles: { fillColor: [22, 160, 133] },
     });
     doc.save("metrics_report.pdf");
   };
@@ -190,14 +216,23 @@ function Metrics() {
   };
 
   return (
-    <div className="metrics">
+    <div className="metrics p-8 bg-gray-50 min-h-screen">
       <Row gutter={[24, 24]}>
-        {/* Bảng chỉ số - 1/2 */}
+        {/* Bảng chỉ số */}
         <Col xs={24} md={16}>
           <Card
-            className="criclebox tablespace mb-24"
+            className="criclebox tablespace mb-24 shadow-lg rounded-lg bg-white"
+            title="Bảng Chỉ Số"
+            style={{ border: '1px solid #e8e8e8' }}
             extra={
               <Space>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={handleAddNew}
+                >
+                  Thêm Chỉ Số
+                </Button>
                 <Select
                   defaultValue="all"
                   style={{ width: 120 }}
@@ -208,10 +243,6 @@ function Metrics() {
                     { value: "Tốc độ", label: "Tốc độ" },
                     { value: "Hiệu suất", label: "Hiệu suất" },
                   ]}
-                />
-                <RangePicker
-                  defaultValue={dateRange}
-                  onChange={handleDateChange}
                 />
                 <Button
                   type="primary"
@@ -241,9 +272,13 @@ function Metrics() {
           </Card>
         </Col>
 
-        {/* Biểu đồ trực quan - 1/2 */}
+        {/* Biểu đồ trực quan */}
         <Col xs={24} md={8}>
-          <Card className="criclebox mb-24" title="Phân bố Chỉ Số">
+          <Card
+            className="criclebox mb-24 shadow-lg rounded-lg bg-white"
+            title="Phân bố Chỉ Số"
+            style={{ border: '1px solid #e8e8e8' }}
+          >
             <div id="chart">
               <ReactApexChart
                 className="chart-visitor"
@@ -256,9 +291,13 @@ function Metrics() {
           </Card>
         </Col>
 
-        {/* Xu hướng - 1/2 */}
+        {/* Xu hướng */}
         <Col xs={24} md={12}>
-          <Card className="criclebox mb-24" title="Xu Hướng">
+          <Card
+            className="criclebox mb-24 shadow-lg rounded-lg bg-white"
+            title="Xu Hướng"
+            style={{ border: '1px solid #e8e8e8' }}
+          >
             <div id="chart">
               <ReactApexChart
                 className="chart-visitor"
@@ -276,9 +315,12 @@ function Metrics() {
           </Card>
         </Col>
 
-        {/* Dự báo và Mức độ hoàn thành - 1/2 */}
+        {/* Dự báo và Mức độ hoàn thành */}
         <Col xs={24} md={12}>
-          <Card className="criclebox mb-24">
+          <Card
+            className="criclebox mb-24 shadow-lg rounded-lg bg-white"
+            style={{ border: '1px solid #e8e8e8' }}
+          >
             <div style={{ marginTop: 24 }}>
               <Title level={4}>Mức Độ Hoàn Thành</Title>
               {filteredData.map((item) => (
@@ -294,6 +336,70 @@ function Metrics() {
           </Card>
         </Col>
       </Row>
+
+      {/* Drawer for Adding New Metric */}
+      <Drawer
+        title="Thêm Chỉ Số Mới"
+        placement="right"
+        onClose={handleCloseDrawer}
+        open={drawerVisible}
+        width={400}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSave}
+        >
+          <Form.Item
+            name="name"
+            label="Chỉ số"
+            rules={[{ required: true, message: "Vui lòng nhập tên chỉ số!" }]}
+          >
+            <FormInput />
+          </Form.Item>
+          <Form.Item
+            name="group"
+            label="Nhóm"
+            rules={[{ required: true, message: "Vui lòng chọn nhóm!" }]}
+          >
+            <Select>
+              <Option value="Chất lượng">Chất lượng</Option>
+              <Option value="Tốc độ">Tốc độ</Option>
+              <Option value="Hiệu suất">Hiệu suất</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="value"
+            label="Giá trị"
+            rules={[
+              { required: true, message: "Vui lòng nhập giá trị!" },
+              { pattern: /^\d+(\.\d+)?$/, message: "Giá trị phải là số!" },
+            ]}
+          >
+            <FormInput />
+          </Form.Item>
+          <Form.Item
+            name="target"
+            label="Tiêu chuẩn"
+            rules={[
+              { required: true, message: "Vui lòng nhập tiêu chuẩn!" },
+              { pattern: /^\d+(\.\d+)?$/, message: "Tiêu chuẩn phải là số!" },
+            ]}
+          >
+            <FormInput />
+          </Form.Item>
+          <Form.Item>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                Lưu
+              </Button>
+              <Button onClick={handleCloseDrawer}>
+                Hủy
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Drawer>
     </div>
   );
 }
