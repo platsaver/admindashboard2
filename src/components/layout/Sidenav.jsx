@@ -1,7 +1,9 @@
-import { Menu, Button } from "antd";
+import { Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
-import { SafetyCertificateOutlined, BarChartOutlined, CalendarOutlined, SolutionOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined, BarChartOutlined, 
+  CalendarOutlined, SolutionOutlined,
+  PlayCircleOutlined, TeamOutlined } from "@ant-design/icons";
 
 function Sidenav({ color }) {
   const { pathname } = useLocation();
@@ -139,7 +141,7 @@ function Sidenav({ color }) {
                 background: page === "personnel" ? color : "",
               }}
             >
-              {partners}
+              <TeamOutlined />
             </span>
             <span className="label">Nhân sự</span>
           </NavLink>
@@ -178,7 +180,7 @@ function Sidenav({ color }) {
                 background: page === "activities" ? color : "",
               }}
             >
-              <SafetyCertificateOutlined />
+              <PlayCircleOutlined />
             </span>
             <span className="label">Hoạt động</span>
           </NavLink>

@@ -53,7 +53,7 @@ const initialPartnerData = [
 
 const columns = [
   {
-    title: "PARTNER",
+    title: "Tên đối tác",
     dataIndex: "name",
     key: "name",
     width: "35%",
@@ -64,13 +64,13 @@ const columns = [
     ),
   },
   {
-    title: "CONTACT",
+    title: "Email",
     dataIndex: "contact",
     key: "contact",
     width: "35%",
   },
   {
-    title: "LOCATION",
+    title: "Địa chỉ",
     dataIndex: "location",
     key: "location",
     width: "30%",
