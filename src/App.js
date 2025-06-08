@@ -4,6 +4,7 @@ import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
 import Profile from "./pages/Profile";
 import PartnersDashboard from "./pages/PartnersDashboard";
+import Personnel from "./pages/Personnel";
 import Standards from "./pages/Standards";
 import Metrics from "./pages/Metrics"
 import Activities from "./pages/Activities";
@@ -24,6 +25,7 @@ function App() {
           <Route path="/billing" element={<Billing />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/partners" element={<PartnersDashboard />} />
+          <Route path="/personnel" element={<Personnel />}/>
           <Route path="/standards" element={<Standards />}/>
           <Route path="/metrics" element={<Metrics />}/>
           <Route path="/activities" element={<Activities />}/>

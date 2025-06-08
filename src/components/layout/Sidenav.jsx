@@ -128,10 +128,23 @@ function Sidenav({ color }) {
             >
               {partners}
             </span>
-            <span className="label">Partners</span>
+            <span className="label">Đối tác</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="2">
+          <NavLink to="/personnel">
+            <span
+              className="icon"
+              style={{
+                background: page === "personnel" ? color : "",
+              }}
+            >
+              {partners}
+            </span>
+            <span className="label">Nhân sự</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="3">
           <NavLink to="/standards">
             <span
               className="icon"
@@ -141,10 +154,10 @@ function Sidenav({ color }) {
             >
               <SafetyCertificateOutlined />
             </span>
-            <span className="label">Standards</span>
+            <span className="label">Tiêu chuẩn</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="3">
+        <Menu.Item key="4">
           <NavLink to="/metrics">
             <span
               className="icon"
@@ -154,10 +167,10 @@ function Sidenav({ color }) {
             >
               <BarChartOutlined />
             </span>
-            <span className="label">Metrics</span>
+            <span className="label">Chỉ số</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="4">
+        <Menu.Item key="5">
           <NavLink to="/activities">
             <span
               className="icon"
@@ -167,10 +180,10 @@ function Sidenav({ color }) {
             >
               <SafetyCertificateOutlined />
             </span>
-            <span className="label">Activities</span>
+            <span className="label">Hoạt động</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="5">
+        <Menu.Item key="6">
           <NavLink to="/reports">
             <span
               className="icon"
@@ -180,7 +193,7 @@ function Sidenav({ color }) {
             >
               <SafetyCertificateOutlined />
             </span>
-            <span className="label">Reports</span>
+            <span className="label">Báo cáo</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="6">
@@ -193,7 +206,7 @@ function Sidenav({ color }) {
             >
               <CalendarOutlined />
             </span>
-            <span className="label">Events</span>
+            <span className="label">Sự kiện</span>
           </NavLink>
         </Menu.Item>
       </Menu>
