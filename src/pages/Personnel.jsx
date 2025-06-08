@@ -90,7 +90,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     render: (status) => (
-      <Tag color={status === 'Active' ? 'yellow' : 'red'}>
+      <Tag color={status === 'Active' ? 'green' : 'red'}>
         {status}
       </Tag>
     ),
