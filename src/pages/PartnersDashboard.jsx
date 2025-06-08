@@ -1,8 +1,22 @@
-import { Row, Col, Card, Radio, Table, Button, Typography, Drawer, Descriptions, Space } from "antd";
+import {
+  Row,
+  Col,
+  Card,
+  Table,
+  Button,
+  Typography,
+  Drawer,
+  Descriptions,
+  Space,
+  Form,
+  Input as FormInput,
+  Modal,
+} from "antd";
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -13,41 +27,27 @@ L.Icon.Default.mergeOptions({
 
 const { Title } = Typography;
 
-const partnerData = [
+const initialPartnerData = [
   {
     key: "1",
     name: "TechCorp Hanoi",
-    industry: "Technology",
     contact: "contact@techcorp.vn",
     location: "Hanoi",
     coordinates: [21.0285, 105.8542],
-    personnel: [
-      { name: "Nguyen Van A", role: "Manager", email: "nguyen.a@techcorp.vn", status: "Active" },
-      { name: "Tran Thi B", role: "Developer", email: "tran.b@techcorp.vn", status: "Active" },
-    ],
   },
   {
     key: "2",
     name: "GreenSolutions HCMC",
-    industry: "Environment",
     contact: "info@greensolutions.vn",
     location: "Ho Chi Minh City",
     coordinates: [10.7769, 106.7009],
-    personnel: [
-      { name: "Le Minh C", role: "Consultant", email: "le.c@greensolutions.vn", status: "Active" },
-      { name: "Pham D", role: "Analyst", email: "pham.d@greensolutions.vn", status: "Inactive" },
-    ],
   },
   {
     key: "3",
     name: "BlueWave Danang",
-    industry: "Logistics",
     contact: "support@bluewave.vn",
     location: "Da Nang",
     coordinates: [16.0544, 108.2022],
-    personnel: [
-      { name: "Hoang E", role: "Logistics Manager", email: "hoang.e@bluewave.vn", status: "Active" },
-    ],
   },
 ];
 
@@ -56,7 +56,7 @@ const columns = [
     title: "PARTNER",
     dataIndex: "name",
     key: "name",
-    width: "30%",
+    width: "35%",
     render: (text) => (
       <div className="avatar-info">
         <Title level={5}>{text}</Title>
@@ -64,120 +64,119 @@ const columns = [
     ),
   },
   {
-    title: "INDUSTRY",
-    dataIndex: "industry",
-    key: "industry",
-    width: "20%",
-  },
-  {
     title: "CONTACT",
     dataIndex: "contact",
     key: "contact",
-    width: "25%",
+    width: "35%",
   },
   {
     title: "LOCATION",
     dataIndex: "location",
     key: "location",
-    width: "20%",
+    width: "30%",
   },
 ];
-
-const personnelColumns = [
-  { title: "Name", dataIndex: "name", key: "name", width: 150 },
-  { title: "Role", dataIndex: "role", key: "role", width: 150 },
-  { title: "Email", dataIndex: "email", key: "email", width: 200 },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    width: 120,
-    render: (status) => (
-      <Button type={status === "Active" ? "primary" : "default"} className="tag-primary">
-        {status}
-      </Button>
-    ),
-  },
-];
-
-const expandedRowRender = (record) => (
-  <Table
-    columns={personnelColumns}
-    dataSource={record.personnel}
-    pagination={false}
-    size="small"
-    scroll={{ x: 620 }}
-  />
-);
 
 function PartnersDashboard() {
-  const [filter, setFilter] = useState("all");
   const [isClient, setIsClient] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [personnelDrawerVisible, setPersonnelDrawerVisible] = useState(false); // Thêm trạng thái cho Drawer nhân sự
+  const [addPartnerDrawerVisible, setAddPartnerDrawerVisible] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState(null);
-  const [selectedPersonnel, setSelectedPersonnel] = useState(null); // Thêm trạng thái cho nhân sự được chọn
+  const [isEditingPartner, setIsEditingPartner] = useState(false);
+  const [deletePartnerModalVisible, setDeletePartnerModalVisible] = useState(false);
+  const [data, setData] = useState(initialPartnerData);
+  const [searchText, setSearchText] = useState("");
+  const [partnerForm] = Form.useForm();
+  const [addPartnerForm] = Form.useForm();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const onFilterChange = (e) => {
-    setFilter(e.target.value);
+  const handleSearch = (value) => {
+    setSearchText(value);
   };
 
   const handleRowClick = (record) => {
     setSelectedPartner(record);
     setDrawerVisible(true);
+    setIsEditingPartner(false);
+    partnerForm.setFieldsValue(record);
   };
 
   const handleCloseDrawer = () => {
     setDrawerVisible(false);
     setSelectedPartner(null);
+    setIsEditingPartner(false);
+    partnerForm.resetFields();
   };
 
-  const handlePersonnelDetail = (partner) => {
-    setSelectedPartner(partner); // Đảm bảo giữ thông tin đối tác
-    setPersonnelDrawerVisible(true);
+  const handleAddPartnerDrawer = () => {
+    setAddPartnerDrawerVisible(true);
+    addPartnerForm.resetFields();
   };
 
-  const handleClosePersonnelDrawer = () => {
-    setPersonnelDrawerVisible(false);
-    setSelectedPersonnel(null);
+  const handleCloseAddPartnerDrawer = () => {
+    setAddPartnerDrawerVisible(false);
+    addPartnerForm.resetFields();
   };
 
-  const handleEdit = (record) => {
-    console.log("Edit partner:", record);
+  const handleEditPartner = () => {
+    setIsEditingPartner(true);
+    partnerForm.setFieldsValue(selectedPartner);
   };
 
-  const handleDelete = (record) => {
-    console.log("Delete partner:", record);
+  const handleSavePartner = () => {
+    partnerForm.validateFields().then((values) => {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.key === selectedPartner.key ? { ...item, ...values } : item
+        )
+      );
+      setSelectedPartner((prev) => ({ ...prev, ...values }));
+      setIsEditingPartner(false);
+      setDrawerVisible(false);
+      partnerForm.resetFields();
+    }).catch((error) => {
+      console.log("Validation failed:", error);
+    });
   };
 
-  const handleEditPersonnel = (personnel) => {
-    console.log("Edit personnel:", personnel);
+  const handleAddPartner = () => {
+    addPartnerForm.validateFields().then((values) => {
+      const newPartner = {
+        ...values,
+        key: Date.now().toString(),
+        coordinates: [21.0285, 105.8542],
+      };
+      setData((prevData) => [...prevData, newPartner]);
+      setAddPartnerDrawerVisible(false);
+      addPartnerForm.resetFields();
+    }).catch((error) => {
+      console.log("Validation failed:", error);
+    });
   };
 
-  const handleDeletePersonnel = (personnel) => {
-    console.log("Delete personnel:", personnel);
-    if (selectedPartner) {
-      const updatedPersonnel = selectedPartner.personnel.filter(p => p.name !== personnel.name);
-      setSelectedPartner({ ...selectedPartner, personnel: updatedPersonnel });
-    }
+  const handleDeletePartner = () => {
+    setData((prevData) =>
+      prevData.filter((item) => item.key !== selectedPartner.key)
+    );
+    setDeletePartnerModalVisible(false);
+    setDrawerVisible(false);
+    setSelectedPartner(null);
   };
 
-  const handleAddPersonnel = () => {
-    console.log("Add new personnel for:", selectedPartner?.name);
-    // Logic để thêm nhân sự mới (ví dụ: mở form nhập liệu)
-    const newPersonnel = { name: "New Person", role: "New Role", email: "new@person.com", status: "Active" };
-    if (selectedPartner) {
-      setSelectedPartner({ ...selectedPartner, personnel: [...selectedPartner.personnel, newPersonnel] });
-    }
+  const showDeletePartnerModal = () => {
+    setDeletePartnerModalVisible(true);
   };
 
-  const filteredData = partnerData.filter((partner) => {
-    if (filter === "all") return true;
-    return partner.industry.toLowerCase() === filter.toLowerCase();
+  const filteredData = data.filter((partner) => {
+    const query = searchText.toLowerCase();
+    return (
+      partner.name.toLowerCase().includes(query) ||
+      partner.contact.toLowerCase().includes(query) ||
+      partner.location.toLowerCase().includes(query)
+    );
   });
 
   return (
@@ -186,21 +185,29 @@ function PartnersDashboard() {
         <Col xs={24} xl={12}>
           <Card
             className="criclebox tablespace mb-24"
-            title="Danh sách đối tác"
+            title="Các đối tác"
             extra={
-              <Radio.Group onChange={onFilterChange} defaultValue="all">
-                <Radio.Button value="all">All</Radio.Button>
-                <Radio.Button value="technology">Technology</Radio.Button>
-                <Radio.Button value="environment">Environment</Radio.Button>
-                <Radio.Button value="logistics">Logistics</Radio.Button>
-              </Radio.Group>
+              <Space>
+                <FormInput
+                  placeholder="Tìm kiếm đối tác..."
+                  prefix={<SearchOutlined />}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  style={{ width: 200 }}
+                />
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={handleAddPartnerDrawer}
+                >
+                  Thêm đối tác
+                </Button>
+              </Space>
             }
           >
             <div className="table-responsive">
               <Table
                 columns={columns}
                 dataSource={filteredData}
-                expandable={{ expandedRowRender }}
                 pagination={false}
                 className="ant-border-space"
                 onRow={(record) => ({
@@ -211,10 +218,7 @@ function PartnersDashboard() {
           </Card>
         </Col>
         <Col xs={24} xl={12}>
-          <Card
-            className="criclebox mb-24"
-            title="Partner Locations"
-          >
+          <Card className="criclebox mb-24" title="Partner Locations">
             <div style={{ height: "500px" }}>
               {isClient ? (
                 <MapContainer
@@ -226,14 +230,12 @@ function PartnersDashboard() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
-                  {partnerData.map((partner) => (
+                  {filteredData.map((partner) => (
                     <Marker key={partner.key} position={partner.coordinates}>
                       <Popup>
                         <b>{partner.name}</b>
                         <br />
                         {partner.location}
-                        <br />
-                        Industry: {partner.industry}
                       </Popup>
                     </Marker>
                   ))}
@@ -246,98 +248,124 @@ function PartnersDashboard() {
         </Col>
       </Row>
       <Drawer
-        title={selectedPartner?.name || "Partner Details"}
+        title={isEditingPartner ? "Chỉnh sửa đối tác" : selectedPartner?.name || "Chi tiết đối tác"}
         placement="right"
         onClose={handleCloseDrawer}
         open={drawerVisible}
         width={400}
       >
-        {selectedPartner && (
+        {selectedPartner && !isEditingPartner && (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Descriptions column={1} bordered>
-              <Descriptions.Item label="Partner Name">
-                {selectedPartner.name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Industry">
-                {selectedPartner.industry}
-              </Descriptions.Item>
-              <Descriptions.Item label="Contact">
-                {selectedPartner.contact}
-              </Descriptions.Item>
-              <Descriptions.Item label="Location">
-                {selectedPartner.location}
-              </Descriptions.Item>
+              <Descriptions.Item label="Partner Name">{selectedPartner.name}</Descriptions.Item>
+              <Descriptions.Item label="Contact">{selectedPartner.contact}</Descriptions.Item>
+              <Descriptions.Item label="Location">{selectedPartner.location}</Descriptions.Item>
             </Descriptions>
             <Button
               type="primary"
-              onClick={() => handlePersonnelDetail(selectedPartner)}
-              style={{ marginBottom: "8px" }}
-            >
-              Chi tiết Nhân sự
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => handleEdit(selectedPartner)}
+              onClick={handleEditPartner}
               style={{ marginBottom: "8px" }}
             >
               Chỉnh sửa
             </Button>
-            <Button
-              type="primary"
-              danger
-              onClick={() => handleDelete(selectedPartner)}
-            >
+            <Button type="primary" danger onClick={showDeletePartnerModal}>
               Xóa
             </Button>
           </div>
         )}
-      </Drawer>
-      <Drawer
-        title={`${selectedPartner?.name || "Personnel Details"} - Nhân sự`}
-        placement="right"
-        onClose={handleClosePersonnelDrawer}
-        open={personnelDrawerVisible}
-        width={700}
-        style={{ overflow: "auto" }}
-      >
-        {selectedPartner && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <Table
-              columns={personnelColumns}
-              dataSource={selectedPartner.personnel}
-              pagination={false}
-              size="small"
-              scroll={{ x: 620, y: 300 }}
-              onRow={(record) => ({
-                onClick: () => setSelectedPersonnel(record),
-              })}
-            />
-            <Space>
-              <Button
-                type="primary"
-                onClick={() => handleEditPersonnel(selectedPersonnel)}
-                disabled={!selectedPersonnel}
-              >
-                Chỉnh sửa
-              </Button>
-              <Button
-                type="primary"
-                danger
-                onClick={() => handleDeletePersonnel(selectedPersonnel)}
-                disabled={!selectedPersonnel}
-              >
-                Xóa
-              </Button>
-              <Button
-                type="primary"
-                onClick={handleAddPersonnel}
-              >
-                Thêm
-              </Button>
-            </Space>
-          </div>
+        {isEditingPartner && (
+          <Form
+            form={partnerForm}
+            layout="vertical"
+            onFinish={handleSavePartner}
+            initialValues={selectedPartner}
+          >
+            <Form.Item
+              name="name"
+              label="Partner Name"
+              rules={[{ required: true, message: "Vui lòng nhập tên đối tác!" }]}
+            >
+              <FormInput />
+            </Form.Item>
+            <Form.Item
+              name="contact"
+              label="Contact"
+              rules={[{ required: true, message: "Vui lòng nhập liên hệ!" }]}
+            >
+              <FormInput />
+            </Form.Item>
+            <Form.Item
+              name="location"
+              label="Location"
+              rules={[{ required: true, message: "Vui lòng nhập địa điểm!" }]}
+            >
+              <FormInput />
+            </Form.Item>
+            <Form.Item>
+              <Space>
+                <Button type="primary" htmlType="submit">
+                  Lưu
+                </Button>
+                <Button onClick={handleCloseDrawer}>Hủy</Button>
+              </Space>
+            </Form.Item>
+          </Form>
         )}
       </Drawer>
+      <Drawer
+        title="Thêm đối tác mới"
+        placement="right"
+        onClose={handleCloseAddPartnerDrawer}
+        open={addPartnerDrawerVisible}
+        width={400}
+      >
+        <Form
+          form={addPartnerForm}
+          layout="vertical"
+          onFinish={handleAddPartner}
+        >
+          <Form.Item
+            name="name"
+            label="Partner Name"
+            rules={[{ required: true, message: "Vui lòng nhập tên đối tác!" }]}
+          >
+            <FormInput />
+          </Form.Item>
+          <Form.Item
+            name="contact"
+            label="Contact"
+            rules={[{ required: true, message: "Vui lòng nhập liên hệ!" }]}
+          >
+            <FormInput />
+          </Form.Item>
+          <Form.Item
+            name="location"
+            label="Location"
+            rules={[{ required: true, message: "Vui lòng nhập địa điểm!" }]}
+          >
+            <FormInput />
+          </Form.Item>
+          <Form.Item>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                Lưu
+              </Button>
+              <Button onClick={handleCloseAddPartnerDrawer}>Hủy</Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Drawer>
+      <Modal
+        title="Xác nhận xóa đối tác"
+        open={deletePartnerModalVisible}
+        onOk={handleDeletePartner}
+        onCancel={() => setDeletePartnerModalVisible(false)}
+        okText="Xóa"
+        cancelText="Hủy"
+        okType="danger"
+      >
+        <p>Bạn có chắc chắn muốn xóa đối tác "{selectedPartner?.name}" không?</p>
+      </Modal>
     </div>
   );
 }
