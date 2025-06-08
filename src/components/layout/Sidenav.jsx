@@ -196,22 +196,6 @@ function Sidenav({ color }) {
             <span className="label">Events</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item className="menu-item-header" key="7">
-          Account Pages
-        </Menu.Item>
-        <Menu.Item key="8">
-          <NavLink to="/profile">
-            <span
-              className="icon"
-              style={{
-                background: page === "profile" ? color : "",
-              }}
-            >
-              {profile}
-            </span>
-            <span className="label">Profile</span>
-          </NavLink>
-        </Menu.Item>
       </Menu>
     </>
   );
