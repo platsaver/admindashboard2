@@ -1,79 +1,99 @@
-import { Card, Row, Col, Statistic, Table, Button, Avatar, Typography, Tag } from 'antd';
-import { useState, useCallback } from 'react';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, useDroppable, DragOverlay } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Table,
+  Button,
+  Typography,
+  Input,
+  Space,
+  Tag,
+  Drawer,
+  Descriptions,
+  Form,
+  Input as FormInput,
+  Select,
+  Modal,
+  Radio,
+} from 'antd';
+import { useState } from 'react';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
+const { Option } = Select;
 
-const SortableTask = ({ id, title, description, priority, getPriorityColor, isDragging }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+const initialTasks = [
+  {
+    key: '1',
+    title: 'Kiểm tra API thanh toán',
+    priority: 'Cao',
+    description: 'Kiểm tra lỗi API thanh toán phát sinh hôm qua',
+  },
+  {
+    key: '2',
+    title: 'Cập nhật tài liệu',
+    priority: 'Thấp',
+    description: 'Cập nhật tài liệu hướng dẫn sử dụng',
+  },
+  {
+    key: '3',
+    title: 'Tối ưu hóa hiệu suất',
+    priority: 'Trung bình',
+    description: 'Cải thiện hiệu suất cơ sở dữ liệu',
+  },
+  {
+    key: '4',
+    title: 'Hoàn thành UI đăng nhập',
+    priority: 'Trung bình',
+    description: 'Hoàn thành giao diện đăng nhập mới',
+  },
+];
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition: transition || 'transform 200ms ease, opacity 200ms ease',
-    marginBottom: '8px',
-    background: '#fff',
-    padding: '16px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-    border: '1px solid #e8e8e8',
-    opacity: isDragging ? 0.5 : 1,
-    willChange: 'transform, opacity',
-  };
-
-  return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <Text strong>{title}</Text>
-          <p style={{ color: '#8c8c8c', margin: '4px 0' }}>{description}</p>
-          <Tag color={getPriorityColor(priority)}>{priority}</Tag>
-        </div>
-        <div>
-          <Button type="text" icon={<EditOutlined />} style={{ color: '#1890ff' }} />
-          <Button type="text" icon={<DeleteOutlined />} style={{ color: '#ff4d4f' }} />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const DroppableColumn = ({ id, children, isOver }) => {
-  const { setNodeRef } = useDroppable({ id });
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={{
-        minHeight: '400px',
-        padding: '8px',
-        borderRadius: '4px',
-        backgroundColor: isOver ? 'rgba(0, 0, 0, 0.05)' : '#fafafa',
-        transition: 'background-color 0.2s ease',
-      }}
-    >
-      {children}
-    </div>
-  );
-};
+const columns = [
+  {
+    title: 'Tiêu đề',
+    dataIndex: 'title',
+    key: 'title',
+    width: '20%',
+    sorter: (a, b) => a.title.localeCompare(b.title),
+  },
+  {
+    title: 'Mô tả',
+    dataIndex: 'description',
+    key: 'description',
+    width: '50%',
+  },
+  {
+    title: 'Mức độ ưu tiên',
+    dataIndex: 'priority',
+    key: 'priority',
+    render: (priority) => (
+      <Tag color={priority === 'Cao' ? 'red' : priority === 'Trung bình' ? 'yellow' : 'green'}>
+        {priority}
+      </Tag>
+    ),
+    filters: [
+      { text: 'Cao', value: 'Cao' },
+      { text: 'Trung bình', value: 'Trung bình' },
+      { text: 'Thấp', value: 'Thấp' },
+    ],
+    onFilter: (value, record) => record.priority === value,
+  },
+];
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState({
-    'todo': [
-      { id: '1', title: 'Kiểm tra API thanh toán', priority: 'Cao', description: 'Kiểm tra lỗi API thanh toán phát sinh hôm qua' },
-      { id: '2', title: 'Cập nhật tài liệu', priority: 'Thấp', description: 'Cập nhật tài liệu hướng dẫn sử dụng' },
-    ],
-    'in-progress': [
-      { id: '3', title: 'Tối ưu hóa hiệu suất', priority: 'Trung bình', description: 'Cải thiện hiệu suất cơ sở dữ liệu' },
-    ],
-    'done': [
-      { id: '4', title: 'Hoàn thành UI đăng nhập', priority: 'Trung bình', description: 'Hoàn thành giao diện đăng nhập mới' },
-    ],
-  });
-
-  const [activeTask, setActiveTask] = useState(null);
+  const [tasks, setTasks] = useState(initialTasks);
+  const [filterPriority, setFilterPriority] = useState('all');
+  const [searchText, setSearchText] = useState('');
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
   const summaryData = {
     systemStatus: 'Ổn định',
@@ -86,76 +106,46 @@ const Dashboard = () => {
     {
       key: '1',
       message: (
-        <>
-          <Avatar.Group>
-            <div className="avatar-info">
-              <Title level={5}>Hệ thống bảo trì</Title>
-              <p>Hệ thống bảo trì dự kiến: 02/06/2025, 2AM-4AM</p>
-            </div>
-          </Avatar.Group>
-        </>
+        <div className="avatar-info">
+          <Title level={5}>Hệ thống bảo trì</Title>
+          <p>Hệ thống bảo trì dự kiến: 02/06/2025, 2AM-4AM</p>
+        </div>
       ),
-      type: (
-        <>
-          <Button type="primary" className="tag-primary">INFO</Button>
-        </>
-      ),
+      type: <Button type="primary" className="tag-primary">INFO</Button>,
       action: (
-        <>
-          <div className="ant-employed">
-            <a href="#pablo">View</a>
-          </div>
-        </>
+        <div className="ant-employed">
+          <a href="#pablo">View</a>
+        </div>
       ),
     },
     {
       key: '2',
       message: (
-        <>
-          <Avatar.Group>
-            <div className="avatar-info">
-              <Title level={5}>Lỗi API</Title>
-              <p>Lỗi API phát hiện ở module thanh toán</p>
-            </div>
-          </Avatar.Group>
-        </>
+        <div className="avatar-info">
+          <Title level={5}>Lỗi API</Title>
+          <p>Lỗi API phát hiện ở module thanh toán</p>
+        </div>
       ),
-      type: (
-        <>
-          <Button className="tag-badge">ERROR</Button>
-        </>
-      ),
+      type: <Button className="tag-badge">ERROR</Button>,
       action: (
-        <>
-          <div className="ant-employed">
-            <a href="#pablo">View</a>
-          </div>
-        </>
+        <div className="ant-employed">
+          <a href="#pablo">View</a>
+        </div>
       ),
     },
     {
       key: '3',
       message: (
-        <>
-          <Avatar.Group>
-            <div className="avatar-info">
-              <Title level={5}>Cập nhật phiên bản</Title>
-              <p>Cập nhật phiên bản mới v2.1.3</p>
-            </div>
-          </Avatar.Group>
-        </>
+        <div className="avatar-info">
+          <Title level={5}>Cập nhật phiên bản</Title>
+          <p>Cập nhật phiên bản mới v2.1.3</p>
+        </div>
       ),
-      type: (
-        <>
-          <Button type="primary" className="tag-primary">SUCCESS</Button>
-        </>
-      ),
+      type: <Button type="primary" className="tag-primary">SUCCESS</Button>,
       action: (
-        <>
-          <div className="ant-employed">
-            <a href="#pablo">View</a>
-          </div>
-        </>
+        <div className="ant-employed">
+          <a href="#pablo">View</a>
+        </div>
       ),
     },
   ];
@@ -181,96 +171,94 @@ const Dashboard = () => {
     },
   ];
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'Cao':
-        return 'red';
-      case 'Trung bình':
-        return 'yellow';
-      case 'Thấp':
-        return 'green';
-      default:
-        return 'gray';
-    }
+  const handleFilterChange = (e) => {
+    setFilterPriority(e.target.value);
+    setCurrentPage(1);
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const handleSearch = (value) => {
+    setSearchText(value);
+    setCurrentPage(1);
+  };
 
-  const handleDragStart = useCallback((event) => {
-    const task = Object.values(tasks)
-      .flat()
-      .find((t) => t.id === event.active.id);
-    setActiveTask(task);
-  }, [tasks]);
+  const handleRowClick = (record) => {
+    setSelectedTask(record);
+    setDrawerVisible(true);
+    setIsEditing(false);
+    setIsAdding(false);
+    form.setFieldsValue(record);
+  };
 
-  const handleDragEnd = useCallback((event) => {
-    const { active, over } = event;
-    setActiveTask(null);
+  const handleCloseDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedTask(null);
+    setIsEditing(false);
+    setIsAdding(false);
+    form.resetFields();
+  };
 
-    if (!over) return;
+  const handleEdit = (record) => {
+    setIsEditing(true);
+    setIsAdding(false);
+    form.setFieldsValue(record);
+  };
 
-    const sourceId = active.id;
-    const overId = over.id;
+  const handleAddNew = () => {
+    setIsAdding(true);
+    setIsEditing(false);
+    setSelectedTask(null);
+    setDrawerVisible(true);
+    form.resetFields();
+  };
 
-    const sourceColumnId = Object.keys(tasks).find((key) =>
-      tasks[key].some((task) => task.id === sourceId)
-    );
-    const destinationColumnId = Object.keys(tasks).includes(overId)
-      ? overId
-      : Object.keys(tasks).find((key) =>
-          tasks[key].some((task) => task.id === overId)
-        );
-
-    if (!sourceColumnId || !destinationColumnId) return;
-
-    if (sourceColumnId === destinationColumnId) {
-      const column = [...tasks[sourceColumnId]];
-      const sourceIndex = column.findIndex((task) => task.id === sourceId);
-      const destinationIndex = column.findIndex((task) => task.id === overId);
-
-      if (sourceIndex !== destinationIndex && destinationIndex !== -1) {
-        const [movedTask] = column.splice(sourceIndex, 1);
-        column.splice(destinationIndex, 0, movedTask);
-
-        setTasks({
-          ...tasks,
-          [sourceColumnId]: column,
-        });
-      }
-    } else {
-      const sourceColumn = [...tasks[sourceColumnId]];
-      const destinationColumn = [...tasks[destinationColumnId]];
-      const sourceIndex = sourceColumn.findIndex((task) => task.id === sourceId);
-      const [movedTask] = sourceColumn.splice(sourceIndex, 1);
-
-      const destinationIndex = destinationColumn.findIndex((task) => task.id === overId);
-      if (destinationIndex === -1) {
-        destinationColumn.push(movedTask);
+  const handleSave = () => {
+    form.validateFields().then((values) => {
+      if (isAdding) {
+        const newTask = {
+          key: (tasks.length + 1).toString(),
+          ...values,
+        };
+        setTasks((prevTasks) => [...prevTasks, newTask]);
       } else {
-        destinationColumn.splice(destinationIndex, 0, movedTask);
+        setTasks((prevTasks) =>
+          prevTasks.map((item) =>
+            item.key === selectedTask.key ? { ...item, ...values } : item
+          )
+        );
+        setSelectedTask({ ...selectedTask, ...values });
       }
+      setIsEditing(false);
+      setIsAdding(false);
+      setDrawerVisible(false);
+      form.resetFields();
+    });
+  };
 
-      setTasks({
-        ...tasks,
-        [sourceColumnId]: sourceColumn,
-        [destinationColumnId]: destinationColumn,
-      });
-    }
-  }, [tasks]);
+  const handleDelete = () => {
+    setTasks((prevTasks) =>
+      prevTasks.filter((item) => item.key !== selectedTask.key)
+    );
+    setDeleteModalVisible(false);
+    setDrawerVisible(false);
+    setSelectedTask(null);
+  };
 
-  const columns = {
-    'todo': { name: 'Cần làm', color: '#1890ff' },
-    'in-progress': { name: 'Đang thực hiện', color: '#fa8c16' },
-    'done': { name: 'Hoàn thành', color: '#52c41a' },
+  const showDeleteModal = () => {
+    setDeleteModalVisible(true);
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    const matchesPriority =
+      filterPriority === 'all' || task.priority === filterPriority;
+    const matchesSearch = task.title
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+    return matchesPriority && matchesSearch;
+  });
+
+  const handlePaginationChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
   };
 
   return (
@@ -331,68 +319,143 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
-      <div style={{ paddingTop: '32px', paddingBottom: '32px' }}>
-        <Card
-          title={<Title level={4} className="text-gray-800">Nhiệm vụ</Title>}
-          className="shadow-lg rounded-lg bg-white"
-          style={{ border: '1px solid #e8e8e8' }}
-        >
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-          >
-            <Row gutter={[16, 16]}>
-              {Object.entries(tasks).map(([columnId, taskList]) => (
-                <Col span={8} key={columnId}>
-                  <Card
-                    title={
-                      <Title level={5} style={{ color: columns[columnId].color, margin: 0 }}>
-                        {columns[columnId].name} ({taskList.length})
-                      </Title>
-                    }
-                    className="shadow-md"
-                    style={{
-                      background: '#fafafa',
-                      border: '1px solid #e8e8e8',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    <SortableContext items={taskList.map((task) => task.id)} strategy={verticalListSortingStrategy}>
-                      <DroppableColumn id={columnId} isOver={activeTask && activeTask.id !== columnId}>
-                        {taskList.map((task) => (
-                          <SortableTask
-                            key={task.id}
-                            id={task.id}
-                            title={task.title}
-                            description={task.description}
-                            priority={task.priority}
-                            getPriorityColor={getPriorityColor}
-                            isDragging={activeTask && activeTask.id === task.id}
-                          />
-                        ))}
-                      </DroppableColumn>
-                    </SortableContext>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-            <DragOverlay>
-              {activeTask ? (
-                <SortableTask
-                  id={activeTask.id}
-                  title={activeTask.title}
-                  description={activeTask.description}
-                  priority={activeTask.priority}
-                  getPriorityColor={getPriorityColor}
-                  isDragging={true}
+      <Row gutter={[24, 24]} style={{ paddingTop: '15px' }}>
+        <Col xs={24} xl={24}>
+          <Card
+            className="criclebox tablespace mb-24 shadow-lg rounded-lg bg-white"
+            title="Nhiệm vụ"
+            style={{ border: '1px solid #e8e8e8' }}
+            extra={
+              <Space>
+                <Button type="primary" onClick={handleAddNew}>
+                  Thêm
+                </Button>
+                <Radio.Group onChange={handleFilterChange} defaultValue="all">
+                  <Radio.Button value="all">Tất cả</Radio.Button>
+                  <Radio.Button value="Cao">Cao</Radio.Button>
+                  <Radio.Button value="Trung bình">Trung bình</Radio.Button>
+                  <Radio.Button value="Thấp">Thấp</Radio.Button>
+                </Radio.Group>
+                <Input
+                  placeholder="Tìm kiếm nhiệm vụ"
+                  prefix={<SearchOutlined />}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  style={{ width: 200 }}
                 />
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-        </Card>
-      </div>
+              </Space>
+            }
+          >
+            <div className="table-responsive">
+              <Table
+                columns={columns}
+                dataSource={filteredTasks}
+                pagination={{
+                  current: currentPage,
+                  pageSize: pageSize,
+                  total: filteredTasks.length,
+                  onChange: handlePaginationChange,
+                  showSizeChanger: true,
+                  pageSizeOptions: ['5', '10', '20'],
+                }}
+                className="ant-border-space"
+                onRow={(record) => ({
+                  onClick: () => handleRowClick(record),
+                })}
+              />
+            </div>
+          </Card>
+        </Col>
+      </Row>
+      <Drawer
+        title={isAdding ? 'Thêm nhiệm vụ mới' : isEditing ? 'Chỉnh sửa nhiệm vụ' : (selectedTask?.title || 'Chi tiết nhiệm vụ')}
+        placement="right"
+        onClose={handleCloseDrawer}
+        open={drawerVisible}
+        width={400}
+      >
+        {selectedTask && !isEditing && !isAdding && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="Tiêu đề">{selectedTask.title}</Descriptions.Item>
+              <Descriptions.Item label="Mô tả">{selectedTask.description}</Descriptions.Item>
+              <Descriptions.Item label="Mức độ ưu tiên">
+                <Tag color={selectedTask.priority === 'Cao' ? 'red' : selectedTask.priority === 'Trung bình' ? 'yellow' : 'green'}>
+                  {selectedTask.priority}
+                </Tag>
+              </Descriptions.Item>
+            </Descriptions>
+            <Button
+              type="primary"
+              onClick={() => handleEdit(selectedTask)}
+              style={{ marginBottom: '8px' }}
+            >
+              Chỉnh sửa
+            </Button>
+            <Button
+              type="primary"
+              danger
+              onClick={showDeleteModal}
+            >
+              Xóa
+            </Button>
+          </div>
+        )}
+        {(isEditing || isAdding) && (
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSave}
+            initialValues={isAdding ? {} : selectedTask}
+          >
+            <Form.Item
+              name="title"
+              label="Tiêu đề"
+              rules={[{ required: true, message: 'Vui lòng nhập tiêu đề!' }]}
+            >
+              <FormInput />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Mô tả"
+              rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+            >
+              <FormInput.TextArea rows={3} />
+            </Form.Item>
+            <Form.Item
+              name="priority"
+              label="Mức độ ưu tiên"
+              rules={[{ required: true, message: 'Vui lòng chọn mức độ ưu tiên!' }]}
+            >
+              <Select>
+                <Option value="Cao">Cao</Option>
+                <Option value="Trung bình">Trung bình</Option>
+                <Option value="Thấp">Thấp</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item>
+              <Space>
+                <Button type="primary" htmlType="submit">
+                  Lưu
+                </Button>
+                <Button onClick={handleCloseDrawer}>Hủy</Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        )}
+      </Drawer>
+      <Modal
+        title="Xác nhận xóa"
+        open={deleteModalVisible}
+        onOk={handleDelete}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Xóa"
+        cancelText="Hủy"
+        okType="danger"
+      >
+        <p>
+          Bạn có chắc chắn muốn xóa nhiệm vụ "{selectedTask?.title}" không?
+        </p>
+      </Modal>
     </div>
   );
 };

@@ -237,9 +237,6 @@ function Header({
 
   return (
     <>
-      <div className="setting-drwer" onClick={showDrawer}>
-        {setting}
-      </div>
       <Row gutter={[24, 0]}>
         <Col span={24} md={6}>
           <Breadcrumb>
