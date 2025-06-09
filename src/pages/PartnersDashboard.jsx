@@ -11,6 +11,7 @@ import {
   Form,
   Input as FormInput,
   Modal,
+  Pagination
 } from "antd";
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -88,6 +89,8 @@ function PartnersDashboard() {
   const [searchText, setSearchText] = useState("");
   const [partnerForm] = Form.useForm();
   const [addPartnerForm] = Form.useForm();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
   useEffect(() => {
     setIsClient(true);
@@ -95,6 +98,7 @@ function PartnersDashboard() {
 
   const handleSearch = (value) => {
     setSearchText(value);
+    setCurrentPage(1); 
   };
 
   const handleRowClick = (record) => {
@@ -152,6 +156,7 @@ function PartnersDashboard() {
       setData((prevData) => [...prevData, newPartner]);
       setAddPartnerDrawerVisible(false);
       addPartnerForm.resetFields();
+      setCurrentPage(1);
     }).catch((error) => {
       console.log("Validation failed:", error);
     });
@@ -164,6 +169,7 @@ function PartnersDashboard() {
     setDeletePartnerModalVisible(false);
     setDrawerVisible(false);
     setSelectedPartner(null);
+    setCurrentPage(1);
   };
 
   const showDeletePartnerModal = () => {
@@ -178,6 +184,16 @@ function PartnersDashboard() {
       partner.location.toLowerCase().includes(query)
     );
   });
+
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  }
 
   return (
     <div className="tabled">
@@ -207,12 +223,21 @@ function PartnersDashboard() {
             <div className="table-responsive">
               <Table
                 columns={columns}
-                dataSource={filteredData}
-                pagination={false}
+                dataSource={paginatedData} // Use paginated data
+                pagination={false} // Disable built-in pagination
                 className="ant-border-space"
                 onRow={(record) => ({
                   onClick: () => handleRowClick(record),
                 })}
+              />
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={filteredData.length}
+                onChange={handlePageChange}
+                showSizeChanger
+                pageSizeOptions={["10", "20", "50"]}
+                style={{ marginTop: 16, textAlign: "right", paddingBottom: 10, paddingRight: 10 }}
               />
             </div>
           </Card>
