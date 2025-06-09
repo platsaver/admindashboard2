@@ -17,8 +17,8 @@ import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import ReactApexChart from "react-apexcharts";
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -147,23 +147,62 @@ function Metrics() {
     XLSX.writeFile(workbook, "metrics_report.xlsx");
   };
 
+  // Helper function to convert Vietnamese to ASCII
+  const vietnameseToAscii = (str) => {
+    return str
+      .replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
+      .replace(/[èéẹẻẽêềếệểễ]/g, 'e')
+      .replace(/[ìíịỉĩ]/g, 'i')
+      .replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o')
+      .replace(/[ùúụủũưừứựửữ]/g, 'u')
+      .replace(/[ỳýỵỷỹ]/g, 'y')
+      .replace(/[đ]/g, 'd')
+      .replace(/[ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴ]/g, 'A')
+      .replace(/[ÈÉẸẺẼÊỀẾỆỂỄ]/g, 'E')
+      .replace(/[ÌÍỊỈĨ]/g, 'I')
+      .replace(/[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]/g, 'O')
+      .replace(/[ÙÚỤỦŨƯỪỨỰỬỮ]/g, 'U')
+      .replace(/[ỲÝỴỶỸ]/g, 'Y')
+      .replace(/[Đ]/g, 'D');
+  };
+
   const exportToPDF = () => {
     const doc = new jsPDF();
-    // Set font to support Vietnamese characters
-    doc.setFont("DejaVuSans", "normal");
-    doc.text("Báo cáo Bộ Chỉ Số", 14, 20);
-    doc.autoTable({
+    
+    // Add title - convert Vietnamese to ASCII
+    doc.text(vietnameseToAscii("Báo cáo bộ chỉ số"), 14, 20);
+    
+    // Use autoTable to create the table
+    autoTable(doc, {
       startY: 30,
-      head: [["Chỉ số", "Nhóm", "Giá trị", "Tiêu chuẩn"]],
+      // Convert header text to ASCII
+      head: [[
+        vietnameseToAscii("Chỉ số"), 
+        vietnameseToAscii("Nhóm"), 
+        vietnameseToAscii("Giá trị"), 
+        vietnameseToAscii("Tiêu chuẩn")
+      ]],
       body: filteredData.map((item) => [
-        item.name,
-        item.group,
-        item.value,
-        item.target,
+        vietnameseToAscii(item.name),
+        vietnameseToAscii(item.group),
+        item.value.toString(),
+        item.target.toString(),
       ]),
-      styles: { font: "DejaVuSans", fontSize: 10 },
-      headStyles: { fillColor: [22, 160, 133] },
+      styles: { 
+        fontSize: 10,
+        cellPadding: 3,
+      },
+      headStyles: { 
+        fillColor: [22, 160, 133],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold'
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245]
+      },
+      margin: { top: 30 },
     });
+    
     doc.save("metrics_report.pdf");
   };
 
