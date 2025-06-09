@@ -84,7 +84,7 @@ export default class CalendarComponent extends Component {
         end: moment().add(1, 'day').hour(11).minute(0).format(),
         importance: "important",
         notes: "Discuss project updates",
-        icon: Users,
+        icon: Zap,
         iconColor: "#007bff",
       },
       {
@@ -94,7 +94,7 @@ export default class CalendarComponent extends Component {
         end: moment().add(2, 'days').hour(14).minute(30).format(),
         importance: "less-important",
         notes: "Quick team catch-up",
-        icon: Coffee,
+        icon: Zap,
         iconColor: "#28a745",
       },
       {
@@ -104,7 +104,7 @@ export default class CalendarComponent extends Component {
         end: moment().add(3, 'days').hour(17).minute(0).format(),
         importance: "critical",
         notes: "Review contract",
-        icon: Phone,
+        icon: Zap,
         iconColor: "#dc3545",
       },
       {
@@ -247,11 +247,11 @@ export default class CalendarComponent extends Component {
       case "critical":
         return Zap;
       case "important":
-        return Users;
+        return Zap;
       case "less-important":
-        return Coffee;
+        return Zap;
       default:
-        return Calendar;
+        return Zap;
     }
   };
 
@@ -564,7 +564,7 @@ export default class CalendarComponent extends Component {
 
         {/* Confirmation Modal for Delete */}
         <Modal
-          title="Confirm Delete"
+          title="Xác nhận xóa"
           open={this.state.deleteConfirmVisible}
           onOk={this.handleDelete}
           onCancel={() => this.setState({ deleteConfirmVisible: false, eventToDelete: null })}
@@ -573,7 +573,7 @@ export default class CalendarComponent extends Component {
           okButtonProps={{ danger: true }}
         >
           <p>
-            Are you sure you want to delete the event "{this.state.eventToDelete?.title}"?
+            Bạn có chắc chắn muốn xóa sự kiện "{this.state.eventToDelete?.title}"?
           </p>
         </Modal>
       </>
